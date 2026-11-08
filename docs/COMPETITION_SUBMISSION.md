@@ -28,39 +28,16 @@ I could read the challenge text but not the template's exact headings; copy the 
 | Setup instructions | Done: [INSTALLATION.md](INSTALLATION.md), [README](../README.md) |
 | Consent and data handling explained | Done: [PRIVACY.md](PRIVACY.md), [SECURITY.md](SECURITY.md); put in the post |
 | No diagnosis/treatment claims | Docs and UI carry wellness-only wording; re-check the final post and video |
-| Public code repository | **Not done** (repository is private and unpushed) |
+| Public code repository | **Not done** (repository is private and unpushed; history audit clean, licence file missing: [RELEASE_AUDIT.md](RELEASE_AUDIT.md)) |
 | Demo video | **Not done** ([DEMO_SCRIPT.md](DEMO_SCRIPT.md) ready) |
-| DEV post with template and `#presagechallenge` | **Not done** (draft below) |
-| Testing instructions for judges | Drafted below; judges use their own free key |
+| DEV post with template and `#presagechallenge` | **Not done** (draft: [DEV_ARTICLE_DRAFT.md](DEV_ARTICLE_DRAFT.md)) |
+| Testing instructions for judges | In the article draft; judges use their own free key |
 | Participant is 18+, single entrant, one entry | Owner to confirm |
 | Submitted before 2026-11-22 11:59 PM PST | Pending |
 
 ## Draft DEV post
 
-**Title:** Aegis Pulse: a consent-first pulse and breathing observatory for the Mac, built on SmartSpectra
-
-**What I built.** Aegis Pulse is an Electron + React + TypeScript desktop app that reads pulse and breathing from a webcam through the Presage SmartSpectra Node.js SDK (3.4.0). It shows the SDK's pulse (12-second average) and breathing (30-second average) readings with the SDK's own confidence and steady / still-settling flag, the SDK's relative pulse waveform and breathing-motion waveform, a readiness strip that explains what the SDK is still waiting for, and live pipeline diagnostics. It is wellness information only: no diagnosis, no stress or emotion scores, nothing estimated by the app.
-
-**Demo.** *[video link]*
-
-**Code.** *[public repository link]*
-
-**How it uses SmartSpectra.** The SDK runs in the Electron main process in custom-input mode. The renderer captures camera frames (about 30 FPS at 1280×720) and sends them over validated IPC; the main process feeds them to `sendFrame`, decodes the SDK's metric packets, and forwards the latest pulse and breathing samples and waveform points to the UI unchanged. See `docs/ARCHITECTURE.md`.
-
-**Consent and Data Handling.**
-- The camera is off at launch. You must tick a consent checkbox, press *Grant consent*, and then separately press *Start measuring*. Consent lives only in main-process memory, is asked on every launch, and can be revoked. The main process refuses Start without consent and denies camera permission unless consent is granted and a session is active.
-- Video frames are processed in memory on the Mac and are not saved or uploaded by the app. Local logs hold only counters and timings (no readings, no frames).
-- The API key is stored encrypted in the macOS Keychain (Electron `safeStorage`); a packaged build ignores `.env`.
-- SDK telemetry is disabled (`enableTelemetry: false`). **Disclosure:** according to Presage's SDK Privacy Policy, the SDK still authenticates with Presage and sends derived measurements and session metadata (not images or video) to Presage, which uses an AI provider to generate "Insights"; Presage says this cannot currently be turned off. I have not inspected the network traffic myself. See `docs/PRIVACY.md` for retention details and sources.
-- Wellness only; not a medical device; for adults.
-
-**Prize categories.** *Best Thoughtful Real-World Use* (consent, data handling and an honest-by-design UI that never invents or smooths readings). *[Owner decides whether to also enter Most Creative or Delightful Use; I would not claim it without a creative hook.]*
-
-**Testing it yourself (for judges).** You need your own free SmartSpectra key (<https://physiology.presagetech.com/auth/login>); no shared credentials are provided because keys must stay confidential. `git clone … && npm install && npm run dev`, open Settings, save the key, then Live Monitor → consent → Start. Details in `docs/INSTALLATION.md`.
-
-**Verified, and what is not.** One real-camera session of 467.7 s ran at about 30 FPS with 13,955 of 13,955 frames accepted and an IPC p95 of 3 ms; 174 automated tests pass. I did **not** validate the accuracy of the readings against a reference device. Details in `docs/TESTING.md`.
-
-**Tags:** `#presagechallenge` (required). Choose any additional tags allowed by DEV, for example `electron`, `typescript`, `privacy` (check DEV's tag limit when posting).
+The full article draft now lives in [DEV_ARTICLE_DRAFT.md](DEV_ARTICLE_DRAFT.md). The prioritized checklist and the public-repository audit are in [RELEASE_AUDIT.md](RELEASE_AUDIT.md).
 
 ## Sources and licence review
 
@@ -80,7 +57,7 @@ Reading of the licence position: the Terms the SDK's own `LICENSE` points to (ef
 
 ## Release blockers (unresolved)
 
-1. **No public repository.** Needs your approval to publish, a licence file for this code, a final secret scan, and checking `git log` for sensitive history. The proprietary Presage sample in `spike/` is git-ignored and must stay out of the repository.
+1. **No public repository.** Needs your approval to publish and a licence file for this code (MIT recommended, not created). The history scan was clean on 2026-11-08; re-run it on the exact history you push. The proprietary Presage sample in `spike/` is git-ignored and must stay out of the repository.
 2. **No demo video** recorded (script ready).
 3. **DEV post not written/published**, and the official template headings need to be copied in.
 4. **SDK redistribution unconfirmed in writing** ([LICENSE_REVIEW.md](LICENSE_REVIEW.md)); end-user terms are only a draft ([END_USER_TERMS.md](END_USER_TERMS.md)) and are not yet shown in the app (ToS §30.1(g)).

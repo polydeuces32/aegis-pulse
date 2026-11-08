@@ -32,3 +32,39 @@ Goal: show a live SmartSpectra signal, the consent flow, and clean camera releas
 - Do not claim accuracy. Say "what the SDK reports".
 - Show the real consent step; do not pre-grant it off camera.
 - After recording, check the video frames for the API key, personal data or notifications before publishing.
+
+## Two-minute recording checklist
+
+Tick every line before pressing record; each "Proof on screen" item is something a judge should be able to see.
+
+### Preflight (not recorded)
+
+- [ ] `npm run check` passes; no other Aegis Pulse window open (`Cmd-Q` any previous instance).
+- [ ] Key already saved (Settings shows *Saved in the macOS Keychain*). `.env` and Keychain dialogs stay off screen.
+- [ ] Fresh launch with `npm run dev`: top bar shows **IDLE**, Live Monitor says *Camera is off*.
+- [ ] Camera free, steady light, face and upper chest in frame, nothing else personal visible behind you.
+- [ ] Notifications off (Do Not Disturb), menu bar clean, window about 1296×900, system audio off if no voice-over.
+- [ ] Screen recorder set to the app window only (not full screen).
+- [ ] Know the order: Alt+5, Alt+1, consent, Start, Alt+2, Alt+3, Alt+4, Alt+1, Stop.
+
+### Timed checklist
+
+| Clock | Do | Proof on screen | Done |
+| --- | --- | --- | --- |
+| 0:00–0:10 | Show Live Monitor, point at IDLE and *Camera is off* | IDLE pill, disabled Stop | [ ] |
+| 0:10–0:25 | Alt+5; show Keychain status line and the Privacy & consent list | text "Saved in the macOS Keychain", the sentence about derived measurements sent to Presage | [ ] |
+| 0:25–0:35 | Alt+1; tick consent; **Grant consent** | checkbox ticked, consent granted | [ ] |
+| 0:35–0:45 | **Start measuring** (allow macOS camera prompt if shown) | RUNNING pill, preview appears | [ ] |
+| 0:45–1:05 | Wait for pulse; point at value, trust, steadiness; readiness strip | a pulse number with confidence and *Steady* or *Still settling* | [ ] |
+| 1:05–1:20 | Alt+2 Signal Lab | pulse and breathing-motion waveforms moving | [ ] |
+| 1:20–1:35 | Alt+3 Sessions, Alt+4 Diagnostics | FPS about 30, IPC p95 in ms, dropped counters | [ ] |
+| 1:35–1:45 | Alt+1 | both pulse and breathing visible, same preview, still RUNNING | [ ] |
+| 1:45–1:55 | **Stop & release camera** | IDLE, *Camera is off* | [ ] |
+| 1:55–2:00 | Show footer disclaimer | "Wellness information only" | [ ] |
+
+### After recording
+
+- [ ] Watch the whole file: no API key, no `.env`, no Keychain dialog, no notifications, no other people, no private windows.
+- [ ] The video does not claim accuracy, diagnosis or clinical use, and says measurements go to Presage.
+- [ ] If pulse or breathing never settled, re-record rather than cutting; do not edit values.
+- [ ] Export, then host it where the challenge accepts it (check the DEV template).

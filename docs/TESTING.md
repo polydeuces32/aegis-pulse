@@ -89,6 +89,10 @@ Build: `npm run build`, then `CSC_IDENTITY_AUTO_DISCOVERY=false npx electron-bui
 | Live camera session in the packaged build | NOT RUN (needs a real key entered by its owner) |
 | Code signature valid / notarized | FAIL / not attempted (no identity; out of scope) |
 
+## Fresh-clone check (2026-11-08)
+
+A clean `git clone` of commit `25edf2e` into a scratch folder (no `.env`, no `spike/`, no logs) followed by `npm ci`: typecheck passes, 174 of 174 tests pass, `npm run build` succeeds, `npm audit` reports 0 vulnerabilities. `npm run scan` exits 1 with one FAIL, "API key present in .env", because the scan requires a development key; every other check passes. Consequently `npm run check` fails on a fresh clone until that check is relaxed (tracked in [RELEASE_AUDIT.md](RELEASE_AUDIT.md)).
+
 ## What the readings mean, and what has not been validated
 
 - **User-observed:** during the live runs the developer saw the app display pulse and breathing values that the SDK flagged as stable, with its own confidence scores, and saw the waveform views populated with SDK samples. That is an observation of the app working, not a measurement of accuracy. The values are not recorded in this repository.

@@ -6,6 +6,13 @@ A macOS desktop app (Electron + React + TypeScript) that shows **pulse** and **b
 
 Status: **competition draft, not yet public.** Open items are listed in [docs/COMPETITION_SUBMISSION.md](docs/COMPETITION_SUBMISSION.md).
 
+## Disclosures
+
+- **Measurements are sent to Presage.** Per Presage's SDK Privacy Policy, the SDK sends derived measurements (for example pulse and breathing) and session metadata to Presage during a session, and uses an AI provider for "Insights"; images and video are not sent. SDK telemetry is off in this app, which Presage says does not stop this. I have not inspected the SDK's network traffic. See [docs/PRIVACY.md](docs/PRIVACY.md).
+- **No clinical validation.** Accuracy of the readings has not been checked against any reference device. Wellness information only.
+- **No compiled app is distributed.** The macOS packaging config here produces an **unsigned, un-notarized** local test build only, and Presage's redistribution terms are not confirmed in writing ([docs/LICENSE_REVIEW.md](docs/LICENSE_REVIEW.md)). Run from source.
+- **The SmartSpectra SDK is proprietary Presage software.** It is not in this repository; `npm install` fetches it, and you need your own API key.
+
 ## What it does (implemented)
 
 | Area | Behaviour |
@@ -71,7 +78,7 @@ Other commands:
 | `npm run typecheck` | Type-check main and renderer |
 | `npm test` | Run the test suite (174 tests) |
 | `npm run scan` | Security scan (run after `npm run build`) |
-| `npm run check` | Typecheck + tests + build + scan |
+| `npm run check` | Typecheck + tests + build + scan. On a fresh clone the scan reports one expected FAIL ("API key present in .env", because it inspects a development `.env`); run the other commands individually until that check is relaxed |
 | `npm run pack` | Local unsigned arm64 build into `release/` (not for distribution) |
 
 ## Documentation
@@ -83,10 +90,12 @@ Other commands:
 - [Testing and verified results](docs/TESTING.md)
 - [Demo script](docs/DEMO_SCRIPT.md)
 - [Competition submission draft](docs/COMPETITION_SUBMISSION.md)
+- [Release audit and submission checklist](docs/RELEASE_AUDIT.md)
+- [DEV article draft](docs/DEV_ARTICLE_DRAFT.md)
 - [SDK licence review](docs/LICENSE_REVIEW.md) (redistribution is **not** confirmed)
 - [End-user terms (draft, for legal review)](docs/END_USER_TERMS.md)
 
 ## Third-party software and licence
 
 - `@smartspectra/node-sdk` 3.4.0 is proprietary Presage software, used under Presage's terms and **not** included in this repository; `npm install` fetches it. It bundles third-party components (FFmpeg under LGPL, plus Apache-licensed components); see the notice files in `node_modules/@smartspectra/node-sdk/`.
-- This repository has **no licence file yet**. Add one before making the repository public.
+- This repository has **no licence file yet**; a licence for this project's own code will be added before it is made public (see [docs/RELEASE_AUDIT.md](docs/RELEASE_AUDIT.md)).
