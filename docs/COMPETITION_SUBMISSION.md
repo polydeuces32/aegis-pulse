@@ -29,7 +29,7 @@ I could read the challenge text but not the template's exact headings; copy the 
 | Consent and data handling explained | Done: [PRIVACY.md](PRIVACY.md), [SECURITY.md](SECURITY.md); put in the post |
 | No diagnosis/treatment claims | Docs and UI carry wellness-only wording; re-check the final post and video |
 | Public code repository | **Not done** (repository is private and unpushed; history audit clean, MIT licence added: [RELEASE_AUDIT.md](RELEASE_AUDIT.md)) |
-| Demo video | **Not done** ([DEMO_SCRIPT.md](DEMO_SCRIPT.md) ready) |
+| Demo video | **Not done** (silent captioned plan, caption file and render script ready: [DEMO_SCRIPT.md](DEMO_SCRIPT.md)) |
 | DEV post with template and `#presagechallenge` | **Not done** (draft: [DEV_ARTICLE_DRAFT.md](DEV_ARTICLE_DRAFT.md)) |
 | Testing instructions for judges | In the article draft; judges use their own free key |
 | Participant is 18+, single entrant, one entry | Owner to confirm |

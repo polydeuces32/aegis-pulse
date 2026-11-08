@@ -1,0 +1,66 @@
+1
+00:00:00,500 --> 00:00:04,500
+Aegis Pulse: pulse and breathing from a webcam,
+using the Presage SmartSpectra SDK
+
+2
+00:00:04,500 --> 00:00:08,000
+Camera is off. Nothing runs until you consent.
+
+3
+00:00:08,500 --> 00:00:14,500
+Your API key lives in the macOS Keychain
+and is never shown in the app
+
+4
+00:00:14,500 --> 00:00:21,500
+Video stays on this Mac. The SDK sends derived measurements
+(pulse, breathing) and session metadata to Presage. Telemetry is off.
+
+5
+00:00:22,500 --> 00:00:31,000
+Consent is explicit, asked on every launch,
+and enforced in the app's main process
+
+6
+00:00:32,500 --> 00:00:41,500
+Start is a separate step. Only now does the camera open.
+(Camera preview hidden for privacy.)
+
+7
+00:00:42,000 --> 00:00:50,500
+Readiness shows what the SDK still needs:
+stay still and face the camera
+
+8
+00:00:51,000 --> 00:00:59,500
+Values are the SDK's own, with its confidence
+and a steady / still-settling flag. Nothing is filled in.
+
+9
+00:01:00,500 --> 00:01:14,000
+Signal Lab: the SDK's relative waveforms, plotted as received.
+Shape only, not blood pressure.
+
+10
+00:01:15,500 --> 00:01:24,500
+Sessions: counts from this session only.
+Kept in memory, discarded when you quit.
+
+11
+00:01:25,500 --> 00:01:34,500
+Diagnostics: live frame rate, IPC latency and dropped-frame counters
+
+12
+00:01:35,500 --> 00:01:44,000
+Switching views never restarts the camera or the SDK session
+
+13
+00:01:45,500 --> 00:01:54,000
+Stop & release camera: one click, from any view.
+Back to IDLE, camera off.
+
+14
+00:01:55,000 --> 00:02:00,000
+Wellness information only. Not a medical device. Not clinically validated.
+Measurements are sent to Presage.

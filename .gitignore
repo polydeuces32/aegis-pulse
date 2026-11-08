@@ -31,3 +31,11 @@ release/
 dist-electron/
 .cache/
 credentials.bin
+
+# screen recordings / media (demo footage can contain a face; keep it out of git)
+*.mov
+*.mp4
+*.m4v
+*.webm
+*.wav
+recordings/

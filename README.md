@@ -43,10 +43,12 @@ No screenshots are committed yet. The files below are **placeholders, not real c
 
 | View | Intended file |
 | --- | --- |
-| Live Monitor (running) | `docs/screenshots/live-monitor.png` — *placeholder* |
-| Signal Lab | `docs/screenshots/signal-lab.png` — *placeholder* |
-| Diagnostics | `docs/screenshots/diagnostics.png` — *placeholder* |
-| Settings | `docs/screenshots/settings.png` — *placeholder* |
+| Live Monitor, consent notice | `docs/screenshots/01-live-idle-consent.png` — *placeholder* |
+| Live Monitor (running) | `docs/screenshots/02-live-running.png` — *placeholder* |
+| Signal Lab | `docs/screenshots/03-signal-lab.png` — *placeholder* |
+| Sessions | `docs/screenshots/04-sessions.png` — *placeholder* |
+| Diagnostics | `docs/screenshots/05-diagnostics.png` — *placeholder* |
+| Settings | `docs/screenshots/06-settings.png` — *placeholder* |
 
 ## Prerequisites
 
