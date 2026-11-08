@@ -33,3 +33,7 @@ Retrieved 2026-11-08. The `physiology.presagetech.com/tos` page is a JavaScript 
   6. Third-party components: FFmpeg is LGPL (dynamically linked shared libraries, replaceable). A distributed app must carry the LGPL texts and notices and not prevent replacing those libraries. Apache-licensed components are listed in `NOTICE`. The local test build copies these files with the package; confirm in each release artifact.
   7. The contest scenario (a source repository without the SDK) is a different matter from distributing a `.app` that contains the SDK; the repository does not contain the SDK, users install it from npm.
 - **Recommended:** email Presage (support@presagetech.com), describe the intended distribution (a free competition demo app, source-only repository, optional unsigned local builds) and ask for written confirmation that §29.1 covers it and that the 2024 terms are superseded. Until then, do not distribute a built `.app` containing the SDK.
+
+## Project licence (added 2026-11-08)
+
+The repository's own code is licensed under the MIT License, Copyright (c) 2026 Giancarlo Vizhnay (`LICENSE`, `package.json` `license` and `author`). That licence covers only the code authored in this repository. It does **not** cover, relicense or modify the terms of the SmartSpectra SDK, which stays under Presage's Terms of Service and its own notice files; the SDK is not part of the repository. `package.json` carries no `repository` field because no public repository URL has been verified (the GitHub URL guessed from the commit email returns 404).

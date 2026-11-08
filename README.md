@@ -76,9 +76,9 @@ Other commands:
 | `npm run dev` | Development app with hot reload |
 | `npm run build` then `npm start` | Production build, then run it via `electron-vite preview` |
 | `npm run typecheck` | Type-check main and renderer |
-| `npm test` | Run the test suite (174 tests) |
+| `npm test` | Run the test suite (188 tests) |
 | `npm run scan` | Security scan (run after `npm run build`) |
-| `npm run check` | Typecheck + tests + build + scan. On a fresh clone the scan reports one expected FAIL ("API key present in .env", because it inspects a development `.env`); run the other commands individually until that check is relaxed |
+| `npm run check` | Typecheck + tests + build + scan. Passes on a clean clone with no `.env` and no API key |
 | `npm run pack` | Local unsigned arm64 build into `release/` (not for distribution) |
 
 ## Documentation
@@ -95,7 +95,8 @@ Other commands:
 - [SDK licence review](docs/LICENSE_REVIEW.md) (redistribution is **not** confirmed)
 - [End-user terms (draft, for legal review)](docs/END_USER_TERMS.md)
 
-## Third-party software and licence
+## Licence
 
-- `@smartspectra/node-sdk` 3.4.0 is proprietary Presage software, used under Presage's terms and **not** included in this repository; `npm install` fetches it. It bundles third-party components (FFmpeg under LGPL, plus Apache-licensed components); see the notice files in `node_modules/@smartspectra/node-sdk/`.
-- This repository has **no licence file yet**; a licence for this project's own code will be added before it is made public (see [docs/RELEASE_AUDIT.md](docs/RELEASE_AUDIT.md)).
+- **Original code in this repository: MIT**, Copyright (c) 2026 Giancarlo Vizhnay. See [LICENSE](LICENSE).
+- **The Presage SmartSpectra SDK is not covered by that licence.** `@smartspectra/node-sdk` 3.4.0 is proprietary Presage software, made available under Presage's Terms of Service; it is **not** included in this repository (`npm install` fetches it) and you need your own API key. Its own licence and notice files stay inside the installed package (`node_modules/@smartspectra/node-sdk/`): `LICENSE`, `NOTICE`, `THIRD_PARTY_NOTICES.txt`, `THIRD_PARTY_FFMPEG.md` and the LGPL texts (the SDK runtime bundles FFmpeg under the LGPL plus Apache-licensed components). Using the SDK is subject to Presage's terms, not the MIT licence; see [docs/LICENSE_REVIEW.md](docs/LICENSE_REVIEW.md).
+- Other dependencies keep their own licences (the production tree is MIT, BSD-3-Clause and Apache-2.0).

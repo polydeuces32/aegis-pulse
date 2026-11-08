@@ -50,7 +50,7 @@ All enforcement is in the Electron main process (`src/main/sdkSession.ts`, `src/
 
 ## Verification performed
 
-- Automated: 174 tests including consent and permission enforcement, direct IPC calls from untrusted senders, second-window senders, restart, revocation, and single-SDK-instance checks ([TESTING.md](TESTING.md)).
+- Automated: 188 tests including consent and permission enforcement, direct IPC calls from untrusted senders, second-window senders, restart, revocation, and single-SDK-instance checks ([TESTING.md](TESTING.md)).
 - Live (development build, macOS 26.6.2): fresh launch idle with consent false; Start without consent rejected; `getUserMedia` without consent denied; `getUserMedia` with consent but without Start denied; consent, then Start, then Stop gave one session, one camera track, and the track and video source were released. Details in [TESTING.md](TESTING.md).
 - `npm run scan` asserts, among others: hardening flags, key absent from sources/bundles/git history, `.env` ignored, telemetry flag present, camera policy present.
 - `npm audit`: 0 vulnerabilities at the time of writing.

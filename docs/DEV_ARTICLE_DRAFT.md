@@ -45,7 +45,7 @@ Details and sources: `docs/PRIVACY.md`, `docs/SECURITY.md`.
 Verified on one Apple Silicon Mac (macOS 26.6.2), one person, one camera:
 
 - A real-camera session of 467.7 seconds: 13,955 of 13,955 frames accepted, none dropped for invalid, stale or SDK-rejected reasons, about 30 FPS, IPC p95 of 3 ms; one SDK session and one camera track throughout, including while I navigated all five views; the camera released on Stop.
-- 174 automated tests pass (consent and camera-permission enforcement, IPC validation, credential storage, UI navigation, and more), typecheck and build pass, the security scan passes, and `npm audit` reports 0 vulnerabilities.
+- 188 automated tests pass (consent and camera-permission enforcement, IPC validation, credential storage, UI navigation, and more), typecheck and build pass, the security scan passes, and `npm audit` reports 0 vulnerabilities.
 
 **Not verified:** the accuracy of the pulse and breathing values. I did not compare them with a reference device, so I make no accuracy or clinical claim. They are exactly what the SDK reports. Test details and limits: `docs/TESTING.md`.
 

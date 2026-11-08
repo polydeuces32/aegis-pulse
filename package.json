@@ -3,6 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "description": "Aegis Pulse - Human Signal Observatory (Phase C1: capture-to-measurement pipeline)",
+  "license": "MIT",
+  "author": "Giancarlo Vizhnay",
   "main": "out/main/index.js",
   "scripts": {
     "dev": "electron-vite dev",

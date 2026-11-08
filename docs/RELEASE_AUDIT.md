@@ -43,8 +43,8 @@ Residual risk: `spike/` and `logs/` exist on disk inside the project folder and 
 
 | # | Issue | Severity | Fix |
 | --- | --- | --- | --- |
-| 1 | No licence file | High (a public repo without one grants no reuse rights) | Approve MIT (or Apache-2.0); add `LICENSE` + `package.json` fields |
-| 2 | `npm run check` (and `npm run scan`) **fails on a fresh clone**: the scan treats "API key present in .env" as a required check. Verified in a clean clone: typecheck, 174 tests, build and `npm audit` (0) pass; only that one scan line fails, so `npm run check` exits 1 | High for judges | Small code change: report it as SKIP when no development key exists. Not done here (D3 allows documentation changes only). Until fixed, the README tells people to run the commands separately |
+| 1 | ~~No licence file~~ | **Resolved in D4:** MIT `LICENSE` (Copyright (c) 2026 Giancarlo Vizhnay), `package.json` `license`/`author` | `repository` field still to add once the URL exists |
+| 2 | ~~`npm run check` fails on a fresh clone~~ **Resolved in D4** (scan now skips exact-key checks when there is no `.env` key and still runs secret-pattern checks; verified in a fresh clone). Original finding: `npm run check` (and `npm run scan`) **failed on a fresh clone**: the scan treats "API key present in .env" as a required check. Verified in a clean clone: typecheck, 188 tests, build and `npm audit` (0) pass; only that one scan line fails, so `npm run check` exits 1 | High for judges | Small code change: report it as SKIP when no development key exists. Not done here (D3 allows documentation changes only). Until fixed, the README tells people to run the commands separately |
 | 3 | No demo video, no real screenshots | Required by the contest (video); screenshots strongly advised | Record using [DEMO_SCRIPT.md](DEMO_SCRIPT.md); capture per [screenshots/README.md](screenshots/README.md) |
 | 4 | Repository not public; remote not configured | Required by the contest | Owner action after the items above |
 | 5 | Judges need their own free Presage key | Informational | Documented; provide setup instructions, not a shared key |
@@ -71,9 +71,9 @@ Recommendation: submit **source only** and say so. The contest requires a public
 
 Items marked **(you)** need your decision or action; I will not do them without approval.
 
-1. **(you)** Approve a project licence (MIT recommended) and the copyright holder name; then add `LICENSE` and `package.json` fields.
+1. ~~Approve a project licence~~ Done in D4 (MIT).
 2. **(you)** Email support@presagetech.com asking for written confirmation of §29.1 for your intended use (source-only repo; optional unsigned local builds). Not blocking for a source-only submission, but ask now.
-3. Approve the small scan fix (item 4.2) so `npm run check` passes on a fresh clone.
+3. ~~Scan fix~~ Done in D4.
 4. **(you)** Capture the six screenshots per [screenshots/README.md](screenshots/README.md); check each for private data.
 5. **(you)** Record the 2-minute demo with [DEMO_SCRIPT.md](DEMO_SCRIPT.md) (needs the camera and your key; I will not open the camera).
 6. **(you)** Decide on tags and prize category; copy the official template headings into [DEV_ARTICLE_DRAFT.md](DEV_ARTICLE_DRAFT.md); fill the video and repository links.

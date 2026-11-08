@@ -28,7 +28,7 @@ I could read the challenge text but not the template's exact headings; copy the 
 | Setup instructions | Done: [INSTALLATION.md](INSTALLATION.md), [README](../README.md) |
 | Consent and data handling explained | Done: [PRIVACY.md](PRIVACY.md), [SECURITY.md](SECURITY.md); put in the post |
 | No diagnosis/treatment claims | Docs and UI carry wellness-only wording; re-check the final post and video |
-| Public code repository | **Not done** (repository is private and unpushed; history audit clean, licence file missing: [RELEASE_AUDIT.md](RELEASE_AUDIT.md)) |
+| Public code repository | **Not done** (repository is private and unpushed; history audit clean, MIT licence added: [RELEASE_AUDIT.md](RELEASE_AUDIT.md)) |
 | Demo video | **Not done** ([DEMO_SCRIPT.md](DEMO_SCRIPT.md) ready) |
 | DEV post with template and `#presagechallenge` | **Not done** (draft: [DEV_ARTICLE_DRAFT.md](DEV_ARTICLE_DRAFT.md)) |
 | Testing instructions for judges | In the article draft; judges use their own free key |
@@ -57,7 +57,7 @@ Reading of the licence position: the Terms the SDK's own `LICENSE` points to (ef
 
 ## Release blockers (unresolved)
 
-1. **No public repository.** Needs your approval to publish and a licence file for this code (MIT recommended, not created). The history scan was clean on 2026-11-08; re-run it on the exact history you push. The proprietary Presage sample in `spike/` is git-ignored and must stay out of the repository.
+1. **No public repository.** Needs your approval to publish. The MIT licence is in place. The history scan was clean on 2026-11-08; re-run `npm run scan` on the exact history you push. The proprietary Presage sample in `spike/` is git-ignored and must stay out of the repository.
 2. **No demo video** recorded (script ready).
 3. **DEV post not written/published**, and the official template headings need to be copied in.
 4. **SDK redistribution unconfirmed in writing** ([LICENSE_REVIEW.md](LICENSE_REVIEW.md)); end-user terms are only a draft ([END_USER_TERMS.md](END_USER_TERMS.md)) and are not yet shown in the app (ToS §30.1(g)).
