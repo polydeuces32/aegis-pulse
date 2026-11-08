@@ -35,7 +35,7 @@ Aegis Pulse itself sends no data to any server other than through the SDK, conta
 | `logs/lifecycle.jsonl` (+ one rotated copy) | Timestamps, session id, consent changes, refused starts, phase changes, per-10-second pipeline stats (FPS, latency, frame counts, memory) | Rotates at 256 KiB; at most about twice that on disk |
 | `logs/session-<time>-<id>.json` | One counters-only summary per session: duration, end reason, frame counts, latency, and counts of SDK samples (not their values) | Newest 50 kept |
 
-Locations: development runs write to `<project>/logs/`; packaged runs to `~/Library/Application Support/aegis-pulse/logs/`. The files hold no video, no frames, no pulse or breathing values and no waveform samples. They are not encrypted and are created with mode 0600. The app never deletes them for you and never uploads them. To remove everything: delete the `logs` folder and use *Remove key*.
+Locations: development runs write to `<project>/logs/`; packaged runs to `~/Library/Application Support/Aegis Pulse/logs/`. The files hold no video, no frames, no pulse or breathing values and no waveform samples. They are not encrypted and are created with mode 0600. The app never deletes them for you and never uploads them. To remove everything: delete the `logs` folder and use *Remove key*.
 
 ## What Presage says about retention (SDK Privacy Policy, effective November 3, 2026, as retrieved on the date below)
 

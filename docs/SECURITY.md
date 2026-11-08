@@ -50,7 +50,7 @@ All enforcement is in the Electron main process (`src/main/sdkSession.ts`, `src/
 
 ## Verification performed
 
-- Automated: 169 tests including consent and permission enforcement, direct IPC calls from untrusted senders, second-window senders, restart, revocation, and single-SDK-instance checks ([TESTING.md](TESTING.md)).
+- Automated: 174 tests including consent and permission enforcement, direct IPC calls from untrusted senders, second-window senders, restart, revocation, and single-SDK-instance checks ([TESTING.md](TESTING.md)).
 - Live (development build, macOS 26.6.2): fresh launch idle with consent false; Start without consent rejected; `getUserMedia` without consent denied; `getUserMedia` with consent but without Start denied; consent, then Start, then Stop gave one session, one camera track, and the track and video source were released. Details in [TESTING.md](TESTING.md).
 - `npm run scan` asserts, among others: hardening flags, key absent from sources/bundles/git history, `.env` ignored, telemetry flag present, camera policy present.
 - `npm audit`: 0 vulnerabilities at the time of writing.
@@ -61,7 +61,7 @@ All enforcement is in the Electron main process (`src/main/sdkSession.ts`, `src/
 2. **Typed key exposure.** The in-app key field exposes the key to renderer JavaScript during typing. Use the native dialog.
 3. **Development key in `.env` is plaintext** on disk (git-ignored). Use the Keychain.
 4. **Packaged builds are unsigned and not notarized.** No Developer ID identity is installed. The test build is ad-hoc signed. The entitlements (`build/entitlements.mac.plist`) include `allow-jit`, `allow-unsigned-executable-memory`, `disable-library-validation` (needed to load Presage's bundled libraries) and camera access.
-5. **Packaged build shares the development user-data folder** (`~/Library/Application Support/aegis-pulse`), so on one machine it can find a key saved by the dev build.
+5. **Packaged and development data are separated** (`src/main/paths.ts`): a packaged app uses `~/Library/Application Support/Aegis Pulse`, development runs use `aegis-pulse`. The Keychain encryption item used by `safeStorage` may still be shared by name between the two on one Mac; this has not been checked.
 6. **`asar` is disabled** in the test build because the SDK loads native libraries by path; app files are readable on disk.
 7. **The SDK is native code with its own network access.** What it sends is governed by Presage; this app has not inspected the network traffic ([PRIVACY.md](PRIVACY.md)).
 8. **Logs are not encrypted.** They contain counters and timings only, with 0600 permissions.

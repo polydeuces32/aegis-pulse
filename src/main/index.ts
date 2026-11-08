@@ -7,10 +7,15 @@ import { CredentialService, CredentialStore } from './credentials';
 import { registerIpc } from './ipc';
 import { KeyHolder } from './keystore';
 import { promptForApiKey } from './nativePrompt';
+import { userDataOverride } from './paths';
 import { allowCamera, allowCameraCheck, type MediaPolicyState } from './permissions';
 import { SdkSession, type SdkPort } from './sdkSession';
 import { SessionLogger } from './sessionLog';
 import type { DecodedMetricsLike } from './metrics';
+
+// Must run before anything reads userData (logs, credentials). Packaged builds never share the development folder.
+const dataDir = userDataOverride(app.isPackaged, app.getPath('appData'));
+if (dataDir) app.setPath('userData', dataDir);
 
 const projectRoot = resolve(__dirname, '..', '..');
 const devUrl = process.env['ELECTRON_RENDERER_URL'];

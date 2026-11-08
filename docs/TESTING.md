@@ -5,7 +5,7 @@
 ```bash
 npm install
 npm run typecheck     # tsc for main/preload/shared/tests and for renderer/tests
-npm test              # vitest run (169 tests in 16 files)
+npm test              # vitest run (174 tests in 17 files)
 npm run build         # electron-vite build -> out/
 npm run scan          # security scan (needs the build; reads .env only to check the key is not leaked)
 npm audit             # dependency advisories
@@ -27,12 +27,12 @@ Environment: Apple Silicon Mac, macOS 26.6.2, Node v26.13.0, npm 11.20.0, Electr
 | Check | Result |
 | --- | --- |
 | `npm run typecheck` | passes |
-| `npm test` | 169 of 169 pass, 16 files |
+| `npm test` | 174 of 174 pass, 17 files |
 | `npm run build` | succeeds |
 | `npm run scan` | all checks pass |
 | `npm audit` | 0 vulnerabilities |
 
-Test files (tests per file): `consentEnforcement` 17, `credentials` 23, `ipc` 14, `sdkSession` 14, `keystore-metrics` 11, `renderer-state` 12, `nativePrompt` 9, `readiness` 9, `lifecycle` 8, `reliability` 8, `sessionLog` 8, `timestamp-stats` 6, `viewSingleton` 5, `camera` 3, `ui/shell` 17, `ui/navigation` 5.
+Test files (tests per file): `consentEnforcement` 17, `credentials` 23, `ipc` 14, `sdkSession` 14, `keystore-metrics` 11, `renderer-state` 12, `nativePrompt` 9, `readiness` 9, `lifecycle` 8, `reliability` 8, `sessionLog` 8, `timestamp-stats` 6, `viewSingleton` 5, `camera` 3, `paths` 3, `ui/shell` 19, `ui/navigation` 5.
 
 ## Methodology
 
@@ -71,6 +71,24 @@ Camera authorization probes (development build, IPC calls only):
 | Start after consent revoked | rejected |
 | Consent, then separate Start, then Stop | legitimate session, camera released |
 
+## Local release-candidate package checks (`release/rc1`, 2026-11-08)
+
+Build: `npm run build`, then `CSC_IDENTITY_AUTO_DISCOVERY=false npx electron-builder --mac dir --arm64 --publish never --config.directories.output=release/rc1`. The package is unsigned (its ad-hoc seal does not verify: `codesign --verify` fails) and was launched anyway for testing only; it must not be distributed.
+
+| Check | Result |
+| --- | --- |
+| Launches on macOS 26.6.2 arm64 | PASS |
+| Own data folder (`~/Library/Application Support/Aegis Pulse`); development folder untouched (key file and 3 log files unchanged) | PASS |
+| Started with `SMARTSPECTRA_API_KEY` set to a dummy value: key source `none`, i.e. the environment is ignored | PASS |
+| Fresh state: IDLE, consent false, camera off, "needs key" callout, no consent card, no Start button | PASS |
+| Start without consent rejected; `getUserMedia` without consent: `NotAllowedError` | PASS |
+| Consent only, then `getUserMedia`: `NotAllowedError` | PASS |
+| Consent but no key, then Start: rejected with `missing-key`, no session, camera stayed off | PASS |
+| Packaged-store round trip with a dummy key: save, source `keychain`, remove, source `none` | PASS |
+| Artifact scan: developer key value absent from every file; no `.env`, logs, `credentials.bin`, certificates, `.git*`, `spike`, `tests`, `docs`, `scripts`, `src`; only the macOS arm64 SDK payload; LGPL and SDK notice files present | PASS |
+| Live camera session in the packaged build | NOT RUN (needs a real key entered by its owner) |
+| Code signature valid / notarized | FAIL / not attempted (no identity; out of scope) |
+
 ## What the readings mean, and what has not been validated
 
 - **User-observed:** during the live runs the developer saw the app display pulse and breathing values that the SDK flagged as stable, with its own confidence scores, and saw the waveform views populated with SDK samples. That is an observation of the app working, not a measurement of accuracy. The values are not recorded in this repository.
@@ -81,7 +99,7 @@ Camera authorization probes (development build, IPC calls only):
 
 - Fake-SDK tests do not exercise Presage's library; only the live checks do, and those were not automated.
 - The live checks are not reproducible by script from this repository: the DevTools drivers and recorder used during review were scratch files and are not committed. A person can reproduce them by following [DEMO_SCRIPT.md](DEMO_SCRIPT.md) and reading `logs/lifecycle.jsonl`.
-- No tests of the packaged build were run after the permission fix and view redesign; the `release/` build predates them.
+- The local release-candidate package (`release/rc1`) had a scripted launch check only; see the results below. The older `release/mac-arm64` build predates the permission fix and the five-view UI.
 - Responsive layouts below about 860 px wide were checked through CSS and unit tests, not by eye.
 - Network traffic of the SDK was not inspected.
 - Only macOS arm64 was tested.

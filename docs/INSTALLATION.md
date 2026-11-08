@@ -47,14 +47,16 @@ cp .env.example .env      # then set SMARTSPECTRA_API_KEY=... in .env
 
 | What | Development run | Packaged run |
 | --- | --- | --- |
-| Encrypted key `credentials.bin` | `~/Library/Application Support/aegis-pulse/` | same folder (the app name is `aegis-pulse`) |
-| Lifecycle log and session summaries | `<project>/logs/` | `~/Library/Application Support/aegis-pulse/logs/` |
+| Encrypted key `credentials.bin` | `~/Library/Application Support/aegis-pulse/` | `~/Library/Application Support/Aegis Pulse/` (separate, starts empty) |
+| Lifecycle log and session summaries | `<project>/logs/` | `~/Library/Application Support/Aegis Pulse/logs/` |
+
+A packaged app never reads or migrates the development folder, so it starts without a key and you onboard it separately. Nothing is copied or deleted between the two.
 
 To remove the key use **Settings → Remove key**. To delete logs, delete the `logs` folder yourself; the app never deletes them.
 
 ## Local test build (optional, unsigned)
 
-`npm run pack` builds an unsigned arm64 app into `release/` (git-ignored). It is for local testing only: it is not signed with a Developer ID, not notarized, and the committed `electron-builder.yml` sets no icon. Do not distribute it.
+`npm run pack` builds an unsigned arm64 app into `release/` (git-ignored; it replaces `release/mac-arm64`). To keep an existing build, pass another folder: `CSC_IDENTITY_AUTO_DISCOVERY=false npx electron-builder --mac dir --arm64 --publish never --config.directories.output=release/rc1`. It is for local testing only: it is not signed with a Developer ID, not notarized, and the committed `electron-builder.yml` sets no icon. Do not distribute it.
 
 ## Troubleshooting
 

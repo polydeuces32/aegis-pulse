@@ -58,7 +58,7 @@ I could read the challenge text but not the template's exact headings; copy the 
 
 **Testing it yourself (for judges).** You need your own free SmartSpectra key (<https://physiology.presagetech.com/auth/login>); no shared credentials are provided because keys must stay confidential. `git clone … && npm install && npm run dev`, open Settings, save the key, then Live Monitor → consent → Start. Details in `docs/INSTALLATION.md`.
 
-**Verified, and what is not.** One real-camera session of 467.7 s ran at about 30 FPS with 13,955 of 13,955 frames accepted and an IPC p95 of 3 ms; 169 automated tests pass. I did **not** validate the accuracy of the readings against a reference device. Details in `docs/TESTING.md`.
+**Verified, and what is not.** One real-camera session of 467.7 s ran at about 30 FPS with 13,955 of 13,955 frames accepted and an IPC p95 of 3 ms; 174 automated tests pass. I did **not** validate the accuracy of the readings against a reference device. Details in `docs/TESTING.md`.
 
 **Tags:** `#presagechallenge` (required). Choose any additional tags allowed by DEV, for example `electron`, `typescript`, `privacy` (check DEV's tag limit when posting).
 
@@ -73,19 +73,19 @@ I could read the challenge text but not the template's exact headings; copy the 
 | Telemetry doc | <https://smartspectra.presagetech.com/docs/telemetry-and-privacy> | Aggregate-only telemetry, opt-out; developers must disclose it |
 | LLM Insights doc | <https://smartspectra.presagetech.com/docs/llm-insights> | Describes the off-device data for that feature; metrics are wellness only, not FDA-cleared |
 | Older SDK terms | <https://api.physiology.presagetech.com/termsofservice> (updated 2024-02-02) | Says users may not "create derivative works based on the SDK" and must pass its terms to derivative apps; conflicts in tone with the newer terms |
-| SDK package licence | `node_modules/@smartspectra/node-sdk/LICENSE` | Proprietary; points to <https://physiology.presagetech.com/tos>, which returned HTTP 504 when fetched on 2026-11-08 |
+| SDK package licence | `node_modules/@smartspectra/node-sdk/LICENSE` | Proprietary; points to <https://physiology.presagetech.com/tos>, which (rendered in a browser) shows the same November 2, 2026 Terms including §29.1. See [LICENSE_REVIEW.md](LICENSE_REVIEW.md) |
 | Third-party notices | `node_modules/@smartspectra/node-sdk/NOTICE`, `THIRD_PARTY_FFMPEG.md`, `COPYING.LGPLv*` | Bundled FFmpeg is LGPL (dynamically linked, replaceable shared libraries); Apache components listed |
 
-Reading of the licence position: the newer Terms appear to allow distributing an app that embeds the SDK, but I could not load the document the SDK's own `LICENSE` points to, and the 2024 terms read more restrictively. Treat redistribution as **unconfirmed** until Presage confirms (support@presagetech.com). The repository itself does not contain the SDK; users install it from npm, which avoids redistributing it in source form. A distributed `.app` would embed it.
+Reading of the licence position: the Terms the SDK's own `LICENSE` points to (effective November 2, 2026, §29.1) appear on their face to allow distributing an app that embeds the SDK, but the grant is revocable, a separate written agreement would control, and the 2024 terms read more restrictively. Treat redistribution as **unconfirmed** until Presage confirms (support@presagetech.com); see [LICENSE_REVIEW.md](LICENSE_REVIEW.md). The repository itself does not contain the SDK; users install it from npm, which avoids redistributing it in source form. A distributed `.app` would embed it.
 
 ## Release blockers (unresolved)
 
 1. **No public repository.** Needs your approval to publish, a licence file for this code, a final secret scan, and checking `git log` for sensitive history. The proprietary Presage sample in `spike/` is git-ignored and must stay out of the repository.
 2. **No demo video** recorded (script ready).
 3. **DEV post not written/published**, and the official template headings need to be copied in.
-4. **SDK redistribution and terms unconfirmed** (see above); the app must show end-user terms and a privacy notice meeting ToS §30.1 if it is distributed (the in-app text covers consent and privacy, but there are no end-user terms yet).
+4. **SDK redistribution unconfirmed in writing** ([LICENSE_REVIEW.md](LICENSE_REVIEW.md)); end-user terms are only a draft ([END_USER_TERMS.md](END_USER_TERMS.md)) and are not yet shown in the app (ToS §30.1(g)).
 5. **Network behaviour of the SDK not observed**; the disclosure relies on Presage's policy.
-6. **No Developer ID signing, no notarization** (no signing identity installed); `release/` build is stale (predates the permission fix and five-view redesign), unsigned, default Electron icon, and shares the dev user-data folder. A signed package is not required by the contest rules (the code repository and video are), so this blocks only a distributable download.
+6. **No Developer ID signing, no notarization** (no signing identity installed); a local release candidate exists (`release/rc1`, five-view UI and permission fix) but is unsigned, ad-hoc only, has the default Electron icon, and has had only a limited launch test. A signed package is not required by the contest rules (the code repository and video are), so this blocks only a distributable download.
 7. **No real screenshots** committed (placeholders only).
 8. **Consent has no proof of a user gesture** (known limitation; optional native confirmation dialog).
 9. **Accuracy not validated** against a reference device; keep all copy free of accuracy or medical claims.

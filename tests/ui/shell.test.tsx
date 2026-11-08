@@ -208,3 +208,23 @@ describe('views show real controller data', () => {
     expect(q('[data-testid="onboarding"]')).toBeTruthy();
   });
 });
+
+describe('data-handling disclosure', () => {
+  const must = ['derived measurements', 'session metadata', 'never video or images', 'telemetry is switched off'];
+  const text = (el: Element): string => (el.textContent ?? '').replace(/\s+/g, ' ').toLowerCase();
+
+  it('the consent screen discloses that Presage receives derived measurements, and carries no outdated claim', () => {
+    mount(makeObservatory({ phase: 'idle', consent: false }));
+    const t = text(q('[data-testid="consent"]'));
+    for (const m of must) expect(t, m).toContain(m);
+    expect(t).not.toContain('only to validate');
+  });
+
+  it('Settings discloses the same facts', () => {
+    mount(makeObservatory({ phase: 'idle' }), 'settings');
+    const t = text(q('[data-testid="view-settings"]'));
+    for (const m of must) expect(t, m).toContain(m);
+    expect(t).not.toContain('only to validate');
+  });
+});
+

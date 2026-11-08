@@ -69,7 +69,7 @@ Other commands:
 | `npm run dev` | Development app with hot reload |
 | `npm run build` then `npm start` | Production build, then run it via `electron-vite preview` |
 | `npm run typecheck` | Type-check main and renderer |
-| `npm test` | Run the test suite (169 tests) |
+| `npm test` | Run the test suite (174 tests) |
 | `npm run scan` | Security scan (run after `npm run build`) |
 | `npm run check` | Typecheck + tests + build + scan |
 | `npm run pack` | Local unsigned arm64 build into `release/` (not for distribution) |
@@ -83,6 +83,8 @@ Other commands:
 - [Testing and verified results](docs/TESTING.md)
 - [Demo script](docs/DEMO_SCRIPT.md)
 - [Competition submission draft](docs/COMPETITION_SUBMISSION.md)
+- [SDK licence review](docs/LICENSE_REVIEW.md) (redistribution is **not** confirmed)
+- [End-user terms (draft, for legal review)](docs/END_USER_TERMS.md)
 
 ## Third-party software and licence
 
