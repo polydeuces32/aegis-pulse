@@ -39,16 +39,16 @@ Camera frames are processed in memory on your Mac and are not saved by this app.
 
 ## Screenshots
 
-No screenshots are committed yet. The files below are **placeholders, not real captures**; capture them yourself (without showing your face, readings or API key if you publish them) and replace the placeholders. See [docs/screenshots/README.md](docs/screenshots/README.md).
+Six real captures of the running app, in [`docs/screenshots/publication/`](docs/screenshots/publication/). In the Live Monitor capture the camera preview is covered by an opaque panel; every other pixel is exactly as the app rendered it. The other five contain no camera preview. Checklist and composition notes: [docs/screenshots/README.md](docs/screenshots/README.md).
 
-| View | Intended file |
+| View | File |
 | --- | --- |
-| Live Monitor, consent notice | `docs/screenshots/01-live-idle-consent.png` — *placeholder* |
-| Live Monitor (running) | `docs/screenshots/02-live-running.png` — *placeholder* |
-| Signal Lab | `docs/screenshots/03-signal-lab.png` — *placeholder* |
-| Sessions | `docs/screenshots/04-sessions.png` — *placeholder* |
-| Diagnostics | `docs/screenshots/05-diagnostics.png` — *placeholder* |
-| Settings | `docs/screenshots/06-settings.png` — *placeholder* |
+| Live Monitor, idle with camera-consent notice | [`01-consent.png`](docs/screenshots/publication/01-consent.png) |
+| Live Monitor (running; preview covered) | [`02-live-running.png`](docs/screenshots/publication/02-live-running.png) |
+| Signal Lab | [`03-signal-lab.png`](docs/screenshots/publication/03-signal-lab.png) |
+| Sessions | [`04-sessions.png`](docs/screenshots/publication/04-sessions.png) |
+| Diagnostics | [`05-diagnostics.png`](docs/screenshots/publication/05-diagnostics.png) |
+| Settings (privacy and consent) | [`06-settings.png`](docs/screenshots/publication/06-settings.png) |
 
 ## Prerequisites
 

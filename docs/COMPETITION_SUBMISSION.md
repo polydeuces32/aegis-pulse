@@ -63,7 +63,7 @@ Reading of the licence position: the Terms the SDK's own `LICENSE` points to (ef
 4. **SDK redistribution unconfirmed in writing** ([LICENSE_REVIEW.md](LICENSE_REVIEW.md)); end-user terms are only a draft ([END_USER_TERMS.md](END_USER_TERMS.md)) and are not yet shown in the app (ToS §30.1(g)).
 5. **Network behaviour of the SDK not observed**; the disclosure relies on Presage's policy.
 6. **No Developer ID signing, no notarization** (no signing identity installed); a local release candidate exists (`release/rc1`, five-view UI and permission fix) but is unsigned, ad-hoc only, has the default Electron icon, and has had only a limited launch test. A signed package is not required by the contest rules (the code repository and video are), so this blocks only a distributable download.
-7. **No real screenshots** committed (placeholders only).
+7. ~~No real screenshots~~ **Six real screenshots** committed in `docs/screenshots/publication/` (preview covered, no face, no key text; verified in D6).
 8. **Consent has no proof of a user gesture** (known limitation; optional native confirmation dialog).
 9. **Accuracy not validated** against a reference device; keep all copy free of accuracy or medical claims.
 10. Participant eligibility (18+, individual entry) and the one-entry rule are for the owner to confirm.

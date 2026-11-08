@@ -1,6 +1,6 @@
 # Screenshots — compositions and privacy checklist
 
-**No real screenshots are committed. Nothing in this folder is a real capture yet.** Capture them yourself from the same session as the demo (or a rehearsal), then add the PNGs and update the table in the main README. Never edit values in an image; the only permitted edit is covering the camera preview.
+**Six publication-ready screenshots are committed in [`publication/`](publication/)** (`01-consent.png`, `02-live-running.png`, `03-signal-lab.png`, `04-sessions.png`, `05-diagnostics.png`, `06-settings.png`). Only the camera preview in 02 was altered (opaque panel); no value, waveform or label was edited. Raw captures stay outside the repo (`~/Pictures/aegis-originals/`, which includes one with a face) and must never be committed. The sections below are the composition guide and checklist for re-capturing.
 
 ## Capture setup
 
@@ -13,7 +13,7 @@
 
 | # | File | Capture when | Composition (what fills the frame) | Visible proof | Must not be visible |
 | --- | --- | --- | --- | --- | --- |
-| 1 | `01-live-idle-consent.png` | Fresh launch, before consent | Live Monitor, full window: left the idle preview area ("Camera is off"), the consent card with its four bullets and the unticked checkbox | IDLE pill, "Camera is off", the bullet that the SDK sends derived measurements and session metadata to Presage, Grant consent button | — (camera is off) |
+| 1 | `01-consent.png` | Fresh launch, before consent | Live Monitor, full window: left the idle preview area ("Camera is off"), the consent card with its four bullets and the unticked checkbox | IDLE pill, "Camera is off", the bullet that the SDK sends derived measurements and session metadata to Presage, Grant consent button | — (camera is off) |
 | 2 | `02-live-running.png` | About 60–90 s after Start, when pulse AND breathing both show | Live Monitor, full window: preview (cover it, see below), pulse and breathing rings, trust and steadiness lines, readiness strip, footer | RUNNING pill, both readings with "How much to trust it" and "Steadiness", readiness strip, footer disclaimer | Your face (cover the preview) |
 | 3 | `03-signal-lab.png` | Same session, after 60 s or more | Signal Lab, full window: four panels (pulse waveform, breathing motion, pulse and breathing confidence) populated, the "not a blood-pressure measurement" note, "How to read these numbers" | Waveforms with data, shape-only wording | — |
 | 4 | `04-sessions.png` | After one Stop and a second short session, or after one finished session | Sessions, full window: current-session table (SDK updates, steady share, range, latest) and the "Earlier sessions in this app run" table with one row, and the memory-only note | Table headers, the "kept in memory only" sentence | — |

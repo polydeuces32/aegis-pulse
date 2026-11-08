@@ -18,9 +18,9 @@ Scope: can this repository be made public as a **source-only** submission, and w
 | Sensitive file types ever committed (`.env`, logs, images, video, `.pem/.p12`, native libraries, `spike/`, `release/`, `out/`) | `git log --all --name-only` | none; the only name matches are the word "credential" in source file names |
 | Personal paths / emails in HEAD | search | one harmless fixture path `/Users/x/...` in a test; no real username or email in tracked files |
 | Proprietary Presage sample code | `spike/electron-quickstart/` (Presage-licensed, `LicenseRef-Proprietary`) is git-ignored and was never committed; line-level overlap check of tracked `src`, `tests`, `scripts` against every sample file and the SDK README (lines of 35+ characters) | 6 overlaps, all single-line API calls or standard Electron idioms (`sdk.on('processingStatus', …)`, `setWindowOpenHandler(() => ({ action: 'deny' }))`, `requestedMetrics: [...breathingMetrics, ...cardioMetrics]`, `sdk.useCustomInput(FrameTransform.kNone)`); no copied blocks |
-| Logs and recordings | tracked tree contains no logs, summaries, screenshots or videos; `logs/` is ignored | clean |
+| Logs and recordings | tracked tree contains no logs, summaries or videos, and only the six reviewed PNGs in `docs/screenshots/publication/`; `logs/` is ignored | clean |
 
-Residual risk: `spike/` and `logs/` exist on disk inside the project folder and are ignored. They will not be pushed, but do not zip or copy the whole folder when publishing. Screenshots taken during review (outside the repo, in a scratch folder) contain a camera preview and readings: **do not publish them**.
+Residual risk: `spike/` and `logs/` exist on disk inside the project folder and are ignored. They will not be pushed, but do not zip or copy the whole folder when publishing. Raw screenshots (outside the repo, in `~/Pictures/aegis-originals/` and a scratch folder) include a camera preview with a face: **do not publish them**; publish only `docs/screenshots/publication/`.
 
 ## 3. Licences
 
@@ -45,7 +45,7 @@ Residual risk: `spike/` and `logs/` exist on disk inside the project folder and 
 | --- | --- | --- | --- |
 | 1 | ~~No licence file~~ | **Resolved in D4:** MIT `LICENSE` (Copyright (c) 2026 Giancarlo Vizhnay), `package.json` `license`/`author` | `repository` field still to add once the URL exists |
 | 2 | ~~`npm run check` fails on a fresh clone~~ **Resolved in D4** (scan now skips exact-key checks when there is no `.env` key and still runs secret-pattern checks; verified in a fresh clone). Original finding: `npm run check` (and `npm run scan`) **failed on a fresh clone**: the scan treats "API key present in .env" as a required check. Verified in a clean clone: typecheck, 188 tests, build and `npm audit` (0) pass; only that one scan line fails, so `npm run check` exits 1 | High for judges | Small code change: report it as SKIP when no development key exists. Not done here (D3 allows documentation changes only). Until fixed, the README tells people to run the commands separately |
-| 3 | No demo video, no real screenshots | Required by the contest (video); screenshots strongly advised | Record using [DEMO_SCRIPT.md](DEMO_SCRIPT.md); capture per [screenshots/README.md](screenshots/README.md) |
+| 3 | No demo video (six screenshots done and verified, D6) | Required by the contest (video) | Record using [DEMO_SCRIPT.md](DEMO_SCRIPT.md) |
 | 4 | Repository not public; remote not configured | Required by the contest | Owner action after the items above |
 | 5 | Judges need their own free Presage key | Informational | Documented; provide setup instructions, not a shared key |
 | 6 | Contest rules prohibit diagnosis claims | Required | Docs/UI use wellness-only wording; re-read the final post and video |
@@ -74,7 +74,7 @@ Items marked **(you)** need your decision or action; I will not do them without 
 1. ~~Approve a project licence~~ Done in D4 (MIT).
 2. **(you)** Email support@presagetech.com asking for written confirmation of §29.1 for your intended use (source-only repo; optional unsigned local builds). Not blocking for a source-only submission, but ask now.
 3. ~~Scan fix~~ Done in D4.
-4. **(you)** Capture the six screenshots per [screenshots/README.md](screenshots/README.md); check each for private data.
+4. ~~Capture the six screenshots~~ **Done (D6):** six images in [screenshots/publication/](screenshots/publication/), checked for faces, key text and personal data. Re-check if the app UI changes.
 5. **(you)** Record the 2-minute demo with [DEMO_SCRIPT.md](DEMO_SCRIPT.md) (needs the camera and your key; I will not open the camera).
 6. **(you)** Decide on tags and prize category; copy the official template headings into [DEV_ARTICLE_DRAFT.md](DEV_ARTICLE_DRAFT.md); fill the video and repository links.
 7. **(you)** Make the repository public only after 1–6 (add a remote, push `main`). Re-run the history scan in section 2 against the exact history you push.

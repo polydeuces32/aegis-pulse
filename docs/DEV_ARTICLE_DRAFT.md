@@ -22,7 +22,7 @@ It deliberately does **not** compute stress scores, emotions or anything diagnos
 
 **Demo video:** [link — not recorded yet]  
 **Code:** [public repository link — not published yet]  
-**Screenshots:** [add real captures; see `docs/screenshots/README.md`]
+**Screenshots:** the six images in `docs/screenshots/publication/` (upload them to DEV; alt text suggestions are in `docs/screenshots/README.md`)
 
 ## How SmartSpectra is used
 
