@@ -31,7 +31,7 @@ export function Settings({ o, prefs, onPrefs }: Props): JSX.Element {
         <h2>Privacy &amp; consent</h2>
         <ul className="plain">
           <li>Video is analysed in memory on this Mac. Frames are never saved or uploaded.</li>
-          <li>The SmartSpectra SDK contacts Presage only to validate the API key and subscription. SDK telemetry is switched off.</li>
+          <li>The SmartSpectra SDK connects to Presage to authenticate the key and deliver models. Per Presage&apos;s SDK privacy policy it also sends derived measurements (pulse, breathing, HRV) and session metadata to Presage, never video or images. SDK usage telemetry is switched off; that does not stop these.</li>
           <li>Readings and waveforms are not written to disk. Only pipeline counters and timings are logged locally.</li>
           <li>Wellness information only. Not a medical device.</li>
         </ul>

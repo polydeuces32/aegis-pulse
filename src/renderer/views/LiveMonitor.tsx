@@ -39,7 +39,7 @@ export function LiveMonitor({ o, visible, agree, onAgree, onNavigate }: Props): 
           <h2 id="consent-h">Before the camera turns on</h2>
           <ul>
             <li>Video is analysed in memory on this Mac. Frames are <strong>never saved or uploaded</strong>.</li>
-            <li>The Presage SmartSpectra SDK contacts Presage only to validate the API key and subscription. SDK telemetry is switched off.</li>
+            <li>The Presage SmartSpectra SDK connects to Presage to authenticate your key. Per Presage&apos;s SDK privacy policy it also sends your derived measurements (pulse, breathing, HRV) and session metadata to Presage &mdash; never video or images. SDK usage telemetry is switched off; that does not stop this.</li>
             <li>Values are what the SDK reports, shown with its own confidence. Nothing is estimated or filled in by this app.</li>
             <li>Wellness information only. This is not a medical device.</li>
           </ul>
