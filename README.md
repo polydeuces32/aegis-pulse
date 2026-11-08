@@ -4,14 +4,14 @@ A macOS desktop app (Electron + React + TypeScript) that shows **pulse** and **b
 
 > **Wellness information only.** Aegis Pulse is not a medical device and makes no diagnostic, treatment or health-decision claims. The SmartSpectra SDK metrics are described by Presage as general-wellness information that has not been cleared by the FDA. Readings can be wrong when you move, talk, or lighting flickers.
 
-Status: **competition draft, not yet public.** Open items are listed in [docs/COMPETITION_SUBMISSION.md](docs/COMPETITION_SUBMISSION.md).
+Status: **source-only entry for the DEV Presage SmartSpectra SDK Challenge.** Planned repository URL: <https://github.com/polydeuces32/aegis-pulse> (planned, not yet verified as published). Open items: [docs/COMPETITION_SUBMISSION.md](docs/COMPETITION_SUBMISSION.md).
 
 ## Disclosures
 
 - **Measurements are sent to Presage.** Per Presage's SDK Privacy Policy, the SDK sends derived measurements (for example pulse and breathing) and session metadata to Presage during a session, and uses an AI provider for "Insights"; images and video are not sent. SDK telemetry is off in this app, which Presage says does not stop this. I have not inspected the SDK's network traffic. See [docs/PRIVACY.md](docs/PRIVACY.md).
 - **No clinical validation.** Accuracy of the readings has not been checked against any reference device. Wellness information only.
 - **No compiled app is distributed.** The macOS packaging config here produces an **unsigned, un-notarized** local test build only, and Presage's redistribution terms are not confirmed in writing ([docs/LICENSE_REVIEW.md](docs/LICENSE_REVIEW.md)). Run from source.
-- **The SmartSpectra SDK is proprietary Presage software.** It is not in this repository; `npm install` fetches it, and you need your own API key.
+- **The SmartSpectra SDK is proprietary Presage software.** It is not in this repository; `npm ci` fetches it, and you need your own API key.
 
 ## What it does (implemented)
 
@@ -61,9 +61,9 @@ Six real captures of the running app, in [`docs/screenshots/publication/`](docs/
 ## Start
 
 ```bash
-git clone <repository-url> aegis-pulse     # replace with the public URL once published
+git clone https://github.com/polydeuces32/aegis-pulse.git     # planned URL; TODO: confirm once the repository is published
 cd aegis-pulse
-npm install
+npm ci
 npm run dev
 ```
 
@@ -91,7 +91,7 @@ Other commands:
 - [Privacy](docs/PRIVACY.md)
 - [Testing and verified results](docs/TESTING.md)
 - [Demo script](docs/DEMO_SCRIPT.md)
-- [Competition submission draft](docs/COMPETITION_SUBMISSION.md)
+- [Competition submission notes](docs/COMPETITION_SUBMISSION.md)
 - [Release audit and submission checklist](docs/RELEASE_AUDIT.md)
 - [DEV article draft](docs/DEV_ARTICLE_DRAFT.md)
 - [SDK licence review](docs/LICENSE_REVIEW.md) (redistribution is **not** confirmed)

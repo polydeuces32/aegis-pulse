@@ -15,13 +15,13 @@ Only macOS arm64 is supported by this project. The SDK itself also ships Linux a
 ## Install and run
 
 ```bash
-git clone <repository-url> aegis-pulse
+git clone https://github.com/polydeuces32/aegis-pulse.git     # planned URL; TODO: confirm once the repository is published
 cd aegis-pulse
-npm install
+npm ci
 npm run dev
 ```
 
-`npm install` fetches the proprietary SmartSpectra SDK and its native runtime (`@smartspectra/node-sdk-darwin-arm64`) from npm; the SDK is not part of this repository. npm may print an "install-scripts … not yet covered by allowScripts" warning for packages such as `koffi` and `esbuild`; the project installs and runs with it.
+`npm ci` installs exactly the versions in `package-lock.json`, including the proprietary SmartSpectra SDK and its native runtime (`@smartspectra/node-sdk-darwin-arm64`), fetched from npm; the SDK is not part of this repository. npm may print an "install-scripts … not yet covered by allowScripts" warning for packages such as `koffi` and `esbuild`; the project installs and runs with it.
 
 Production-style run: `npm run build` then `npm start` (runs `electron-vite preview`).
 
@@ -71,6 +71,6 @@ To remove the key use **Settings → Remove key**. To delete logs, delete the `l
 | Pulse or breathing shows "—" or *Still settling* | Normal during the averaging windows. Sit still, face the camera with face and chest in frame, steady light, do not talk. |
 | `ELECTRON_RUN_AS_NODE` set in your shell and the app exits immediately | Unset it (`env -u ELECTRON_RUN_AS_NODE npm run dev`). |
 | Port or window already open | Quit any previous Aegis Pulse instance (Cmd-Q) and start again. |
-| `npm install` fails on native modules | Use Node 20+, a clean `node_modules`, and check you are on arm64 (`uname -m`). |
+| `npm ci` fails on native modules | Use Node 20+, a clean `node_modules`, and check you are on arm64 (`uname -m`). |
 
 If the SDK reports an error, the message appears on Live Monitor and in Diagnostics. Error text is scrubbed of the key before display or logging.

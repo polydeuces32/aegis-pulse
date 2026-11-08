@@ -1,6 +1,6 @@
 # DEV article draft — Presage SmartSpectra SDK Challenge
 
-> **Draft, unpublished.** Replace the bracketed placeholders, copy the official DEV submission template headings from the [challenge page](https://dev.to/challenges/presage-2026-11-04), and tick the blockers in [RELEASE_AUDIT.md](RELEASE_AUDIT.md) before posting. Every statement below is backed by this repository or by a cited source; do not add claims that are not.
+> **Draft, unpublished.** Resolve the TODO items, copy the official DEV submission template headings from the [challenge page](https://dev.to/challenges/presage-2026-11-04) (the template is only visible in the DEV new-post editor), and tick the blockers in [RELEASE_AUDIT.md](RELEASE_AUDIT.md) before posting. Every statement below is backed by this repository or by a cited source; do not add claims that are not.
 > Required tag: `#presagechallenge`. DEV allows a limited number of tags per post; check the limit when posting.
 
 ---
@@ -20,9 +20,20 @@ Aegis Pulse is a macOS desktop app (Electron, React, TypeScript) that turns a we
 
 It deliberately does **not** compute stress scores, emotions or anything diagnostic, and it shows only what the SDK reports.
 
-**Demo video:** [link — not recorded yet]  
-**Code:** [public repository link — not published yet]  
+**Demo video:** TODO: add the hosted link (the video is rendered locally and not uploaded yet).  
+**Code:** TODO: confirm and link the public repository once published. Planned URL: <https://github.com/polydeuces32/aegis-pulse> (not yet verified as published).  
 **Screenshots:** the six images in `docs/screenshots/publication/` (upload them to DEV; alt text suggestions are in `docs/screenshots/README.md`)
+
+## About the demo video
+
+A silent (no audio track), 50.53-second screen recording, cropped to the app window, with captions added afterwards. What it shows, and what it does not:
+
+- **It starts with a session that is already RUNNING** (timer 00:02). The recording does **not** show the consent step or the Start click; those are described in this post and shown in the screenshots (the consent notice and the Settings privacy block). I did not stage or fake them.
+- **Live SDK signal:** pulse appears at about 9.5 s and shows 92 to 93 BPM, labelled stable by the SDK, until Stop. These are the values the SDK reported, not validated against any reference device.
+- **Breathing is preliminary.** The first reading (17 breaths/min) appears at about 8.5 s and drifts to 14 during the clip; the app labels it "Preliminary, not yet stable" the whole time, and so does the video. I do not call it stable.
+- **Stop:** the video shows *Stop & release camera* (at about 15.7 s): the camera turns off and the status returns to IDLE. The remaining time shows Signal Lab, Settings, Diagnostics and Sessions after Stop.
+- **Camera preview hidden:** an opaque panel covers the camera preview in every frame where it was visible, so no face appears in the video. The panel is a post-production edit and is labelled as such.
+- **Privacy line on every frame:** derived measurements (pulse, breathing) and session metadata are transmitted to Presage.
 
 ## How SmartSpectra is used
 
@@ -63,9 +74,9 @@ Verified on one Apple Silicon Mac (macOS 26.6.2), one person, one camera:
 You need your own free SmartSpectra API key: <https://physiology.presagetech.com/auth/login>. I am not sharing a key, because keys must stay confidential.
 
 ```bash
-git clone [repository-url] aegis-pulse
+git clone https://github.com/polydeuces32/aegis-pulse.git   # planned URL; TODO: confirm once published
 cd aegis-pulse
-npm install
+npm ci
 npm run dev
 ```
 
@@ -74,8 +85,18 @@ Open **Settings**, choose *Enter key securely (macOS dialog)* and paste your key
 ## Prize categories
 
 - **Best Thoughtful Real-World Use:** consent enforced in the main process, honest data handling, a UI that never invents or smooths readings.
-- *[Most Creative or Delightful Use: only if you can name a genuine creative hook; I would not claim it otherwise.]*
+- TODO (decision): *Most Creative or Delightful Use*: claim only if there is a genuine creative hook; otherwise leave it out.
 
 ## Credits
 
-Presage SmartSpectra SDK (proprietary; not included in the repository), Electron, React, Vite, Vitest. Built with AI coding assistance, which the challenge allows. [If you embed an agent session, check the transcript for keys and personal data first.]
+Presage SmartSpectra SDK (proprietary; not included in the repository), Electron, React, Vite, Vitest. Built with AI coding assistance, which the challenge allows. TODO (optional): if you embed an agent session, check the transcript for keys and personal data first.
+
+## TODO before posting
+
+- [ ] Host the silent demo video and add its link (not uploaded).
+- [ ] Confirm the repository is public and add its URL (planned: https://github.com/polydeuces32/aegis-pulse).
+- [ ] Confirm on the challenge page that submissions are still open (due November 22, 2026, 11:59 PM PST; the page header read "Challenge Status: Live Ended").
+- [ ] Copy the official DEV template headings and tag `#presagechallenge`.
+- [ ] Email support@presagetech.com for written confirmation of Terms of Service §29.1 (SDK redistribution); not needed for source-only, needed before distributing any compiled app.
+- [ ] End-user terms ([END_USER_TERMS.md](END_USER_TERMS.md)) remain a draft for legal review; the `[contact]` field is intentionally unresolved.
+- [ ] Re-read the final post and video for any diagnosis, treatment or accuracy claim.

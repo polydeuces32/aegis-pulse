@@ -2,9 +2,28 @@
   "name": "aegis-pulse",
   "version": "0.1.0",
   "private": true,
-  "description": "Aegis Pulse - Human Signal Observatory (Phase C1: capture-to-measurement pipeline)",
+  "description": "Aegis Pulse - a consent-first macOS app (Electron, React, TypeScript) that shows live pulse and breathing from the Presage SmartSpectra SDK. Wellness information only; source only; bring your own API key.",
   "license": "MIT",
   "author": "Giancarlo Vizhnay",
+  "homepage": "https://github.com/polydeuces32/aegis-pulse#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/polydeuces32/aegis-pulse.git"
+  },
+  "bugs": {
+    "url": "https://github.com/polydeuces32/aegis-pulse/issues"
+  },
+  "keywords": [
+    "presage",
+    "smartspectra",
+    "electron",
+    "react",
+    "typescript",
+    "macos",
+    "privacy",
+    "wellness",
+    "presagechallenge"
+  ],
   "main": "out/main/index.js",
   "scripts": {
     "dev": "electron-vite dev",

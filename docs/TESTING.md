@@ -3,7 +3,7 @@
 ## Commands
 
 ```bash
-npm install
+npm ci
 npm run typecheck     # tsc for main/preload/shared/tests and for renderer/tests
 npm test              # vitest run (188 tests in 18 files)
 npm run build         # electron-vite build -> out/

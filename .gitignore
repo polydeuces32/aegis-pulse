@@ -39,3 +39,21 @@ credentials.bin
 *.webm
 *.wav
 recordings/
+
+# raw screenshot captures (may contain a face); only the six reviewed publication PNGs are allowed in git
+Screenshot*.png
+Screen Shot*.png
+Screen Recording*
+*-raw.png
+*_raw.png
+raw-*.png
+docs/screenshots/*
+!docs/screenshots/README.md
+!docs/screenshots/publication/
+docs/screenshots/publication/*
+!docs/screenshots/publication/01-consent.png
+!docs/screenshots/publication/02-live-running.png
+!docs/screenshots/publication/03-signal-lab.png
+!docs/screenshots/publication/04-sessions.png
+!docs/screenshots/publication/05-diagnostics.png
+!docs/screenshots/publication/06-settings.png
