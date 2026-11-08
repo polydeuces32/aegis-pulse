@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import type { AegisError, AegisEvent, MainStats, Phase, Signal } from '../../shared/ipc';
+import type { AegisError, AegisEvent, CredentialStatus, MainStats, Phase, Signal } from '../../shared/ipc';
 import { CameraError, FramePump, openCamera, type CaptureStats } from '../capture';
 import { Series } from './series';
 
@@ -25,6 +25,10 @@ export function useObservatory() {
   const [mainStats, setMainStats] = useState<MainStats | null>(null);
   const [capStats, setCapStats] = useState<CaptureStats | null>(null);
   const [busy, setBusy] = useState(false);
+  const [cred, setCred] = useState<CredentialStatus | null>(null);
+  const [credMessage, setCredMessage] = useState<string | null>(null);
+  const [credBusy, setCredBusy] = useState(false);
+  const [credNotice, setCredNotice] = useState<string | null>(null);
   const [nowMs, setNowMs] = useState(() => performance.now());
 
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -71,6 +75,7 @@ export function useObservatory() {
 
   useEffect(() => {
     const api = window.aegis;
+    void api.credentialStatus().then(setCred);
     void api.getState().then((s) => {
       phaseRef.current = s.phase;
       setPhase(s.phase);
@@ -142,6 +147,29 @@ export function useObservatory() {
     else setError(r.error);
   }, []);
 
+  /** Runs one credential action and reports the outcome. Results never contain the key. */
+  const runCredential = useCallback(async (action: () => Promise<{ ok: true; saved?: boolean } | { ok: false; error: { message: string } }>, successNotice: string) => {
+    setCredBusy(true);
+    setCredMessage(null);
+    setCredNotice(null);
+    try {
+      const r = await action();
+      if (!r.ok) setCredMessage(r.error.message);
+      else if (r.saved !== false) setCredNotice(successNotice); // saved === false means the user cancelled
+    } catch {
+      setCredMessage('The key could not be saved.');
+    }
+    setCred(await window.aegis.credentialStatus());
+    setCredBusy(false);
+  }, []);
+
+  const SAVED = 'API key saved securely in the macOS Keychain. You can start measuring.';
+  const importKey = useCallback(() => runCredential(() => window.aegis.importKeyFromClipboard(), SAVED), [runCredential]);
+  const enterKeyNative = useCallback(() => runCredential(() => window.aegis.enterKeyNative(), SAVED), [runCredential]);
+  // The key is passed straight through and never stored in React state.
+  const saveTypedKey = useCallback((key: string) => runCredential(() => window.aegis.saveTypedKey(key), SAVED), [runCredential]);
+  const removeKey = useCallback(() => runCredential(() => window.aegis.removeKey(), 'Stored API key removed.'), [runCredential]);
+
   const start = useCallback(async () => {
     setBusy(true);
     setCameraError(null);
@@ -187,5 +215,6 @@ export function useObservatory() {
   return {
     phase, consent, pulse, breathing, packets, validation, error, cameraError, mainStats, capStats, busy,
     series, videoRef, sinceMs, sessionSec, grantConsent, revokeConsent, start, stop,
+    cred, credMessage, credNotice, credBusy, importKey, enterKeyNative, saveTypedKey, removeKey,
   };
 }

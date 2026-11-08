@@ -8,6 +8,11 @@ export const CH = {
   stop: 'aegis:stop',
   frame: 'aegis:frame',
   event: 'aegis:event',
+  credStatus: 'aegis:cred-status',
+  credImport: 'aegis:cred-import',
+  credRemove: 'aegis:cred-remove',
+  credEnter: 'aegis:cred-enter',
+  credSaveTyped: 'aegis:cred-save-typed',
 } as const;
 
 export const LIMITS = {
@@ -34,6 +39,8 @@ export type ErrorKind =
   | 'state'
   | 'missing-key'
   | 'consent'
+  | 'credential'
+  | 'timeout'
   | 'memory-limit'
   | 'unknown';
 
@@ -91,6 +98,19 @@ export interface Snapshot {
 
 export type Result = { ok: true } | { ok: false; error: AegisError };
 
+/** saved=false with ok=true means the user cancelled; nothing changed. Never carries the key. */
+export type CredentialResult = { ok: true; saved: boolean } | { ok: false; error: AegisError };
+
+/** Upper bound on a typed key crossing IPC (the SDK itself clamps keys to 1024). */
+export const MAX_TYPED_KEY_CHARS = 1024;
+
+/** saveTypedKey takes exactly one string argument within bounds; anything else is rejected. */
+export function validateTypedKeyArg(args: readonly unknown[]): string | null {
+  if (args.length !== 1) return null;
+  const v = args[0];
+  return typeof v === 'string' && v.length <= MAX_TYPED_KEY_CHARS + 64 ? v : null;
+}
+
 export type FrameAck =
   | { accepted: true }
   | { accepted: false; reason: 'invalid' | 'stale' | 'not-running' | 'sdk-rejected' };
@@ -113,6 +133,15 @@ export interface FramePayload {
   sentAtEpochMs: number;
 }
 
+export type KeySource = 'keychain' | 'environment' | 'dotenv' | 'none';
+
+/** Never contains the key itself. */
+export interface CredentialStatus {
+  source: KeySource;
+  /** macOS Keychain-backed encryption is available, so a key can be stored safely. */
+  canStore: boolean;
+}
+
 export interface AegisApi {
   getState(): Promise<Snapshot>;
   setConsent(granted: boolean): Promise<Result>;
@@ -120,6 +149,14 @@ export interface AegisApi {
   stop(): Promise<Result>;
   sendFrame(frame: FramePayload): Promise<FrameAck>;
   onEvent(cb: (e: AegisEvent) => void): () => void;
+  credentialStatus(): Promise<CredentialStatus>;
+  /** Main process reads the clipboard itself; the key never enters renderer JavaScript. */
+  importKeyFromClipboard(): Promise<CredentialResult>;
+  removeKey(): Promise<Result>;
+  /** Preferred: native macOS hidden-input dialog run by the main process; the key never enters renderer JavaScript. */
+  enterKeyNative(): Promise<CredentialResult>;
+  /** In-app password field. The key IS visible to renderer JavaScript during entry. */
+  saveTypedKey(key: string): Promise<CredentialResult>;
 }
 
 // ---------- validators (all take `unknown`) ----------

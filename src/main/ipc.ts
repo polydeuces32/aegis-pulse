@@ -6,10 +6,14 @@ import {
   validateFrame,
   validateNoArgs,
   type AegisError,
+  type CredentialResult,
+  type CredentialStatus,
+  validateTypedKeyArg,
   type FrameAck,
   type Result,
   type Snapshot,
 } from '../shared/ipc';
+import type { CredentialService } from './credentials';
 import type { SdkSession } from './sdkSession';
 
 const deny = (message: string): { ok: false; error: AegisError } => ({
@@ -23,7 +27,12 @@ const deny = (message: string): { ok: false; error: AegisError } => ({
  *  2. validates argument count/type/shape (renderer input is untrusted),
  *  3. returns plain, secret-free data.
  */
-export function registerIpc(win: BrowserWindow, session: SdkSession, allowedUrls: readonly string[]): () => void {
+export function registerIpc(
+  win: BrowserWindow,
+  session: SdkSession,
+  credentials: CredentialService,
+  allowedUrls: readonly string[],
+): () => void {
   const trusted = (e: IpcMainInvokeEvent): boolean =>
     e.sender === win.webContents && !!e.senderFrame && e.senderFrame === win.webContents.mainFrame && isTrustedUrl(e.senderFrame.url, allowedUrls);
 
@@ -59,7 +68,34 @@ export function registerIpc(win: BrowserWindow, session: SdkSession, allowedUrls
     return session.handleFrame(check.frame);
   });
 
+  ipcMain.handle(CH.credStatus, (e, ...args): CredentialStatus | Result => {
+    if (!trusted(e) || !validateNoArgs(args)) return deny('Rejected.');
+    return credentials.status();
+  });
+
+  ipcMain.handle(CH.credImport, (e, ...args): CredentialResult => {
+    if (!trusted(e) || !validateNoArgs(args)) return deny('Rejected.');
+    return credentials.importFromClipboard();
+  });
+
+  ipcMain.handle(CH.credEnter, async (e, ...args): Promise<CredentialResult> => {
+    if (!trusted(e) || !validateNoArgs(args)) return deny('Rejected.');
+    return credentials.enterNatively();
+  });
+
+  ipcMain.handle(CH.credSaveTyped, (e, ...args): CredentialResult => {
+    if (!trusted(e)) return deny('Rejected.');
+    const typed = validateTypedKeyArg(args);
+    if (typed === null) return deny('Invalid key argument.');
+    return credentials.saveTyped(typed);
+  });
+
+  ipcMain.handle(CH.credRemove, (e, ...args): Result => {
+    if (!trusted(e) || !validateNoArgs(args)) return deny('Rejected.');
+    return credentials.remove();
+  });
+
   return () => {
-    for (const ch of [CH.getState, CH.consent, CH.start, CH.stop, CH.frame]) ipcMain.removeHandler(ch);
+    for (const ch of [CH.getState, CH.consent, CH.start, CH.stop, CH.frame, CH.credStatus, CH.credImport, CH.credRemove, CH.credEnter, CH.credSaveTyped]) ipcMain.removeHandler(ch);
   };
 }

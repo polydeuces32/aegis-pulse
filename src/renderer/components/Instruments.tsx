@@ -1,6 +1,7 @@
 import type { Signal } from '../../shared/ipc';
 import type { Series } from '../state/series';
 import type { ReadingStatus } from '../state/quality';
+import { confidenceWords, stabilityWords } from '../state/readiness';
 
 const R = 54;
 const C = 2 * Math.PI * R;
@@ -71,10 +72,10 @@ export function ReadingInstrument({ title, unit, color, sig, status, history, hi
         <h2>{title}</h2>
         <span className={`chip chip-${status.kind}${status.unstableAtEnd ? ' chip-preliminary' : ''}`}>{status.label}</span>
         <dl>
-          <dt>SDK confidence</dt>
-          <dd>{sig && status.showValue ? `${sig.confidence.toFixed(0)}%` : 'unavailable'}</dd>
-          <dt>Stability</dt>
-          <dd className={sig && status.showValue && !sig.stable ? 'warn-text' : ''}>{sig && status.showValue ? (sig.stable ? 'stable' : 'not yet stable') : 'unavailable'}</dd>
+          <dt title="The SDK's own 0-100% score for how much to trust this reading">How much to trust it</dt>
+          <dd className={sig && status.showValue ? `conf-${confidenceWords(sig.confidence).band}` : ''}>{sig && status.showValue ? confidenceWords(sig.confidence).text : 'unavailable'}</dd>
+          <dt title="Steady = the SDK considers the reading settled. Still settling = preliminary.">Steadiness</dt>
+          <dd className={sig && status.showValue && !sig.stable ? 'warn-text' : ''}>{sig && status.showValue ? stabilityWords(sig.stable) : 'unavailable'}</dd>
         </dl>
         <Sparkline series={history} color={color} spanSec={120} />
         <div className="note">{historyLabel}</div>

@@ -8,6 +8,11 @@ const api: AegisApi = {
   start: () => ipcRenderer.invoke(CH.start),
   stop: () => ipcRenderer.invoke(CH.stop),
   sendFrame: (frame: FramePayload) => ipcRenderer.invoke(CH.frame, frame),
+  credentialStatus: () => ipcRenderer.invoke(CH.credStatus),
+  importKeyFromClipboard: () => ipcRenderer.invoke(CH.credImport),
+  removeKey: () => ipcRenderer.invoke(CH.credRemove),
+  enterKeyNative: () => ipcRenderer.invoke(CH.credEnter),
+  saveTypedKey: (key: string) => ipcRenderer.invoke(CH.credSaveTyped, key),
   onEvent: (cb: (e: AegisEvent) => void) => {
     const listener = (_e: Electron.IpcRendererEvent, payload: AegisEvent): void => cb(payload);
     ipcRenderer.on(CH.event, listener);

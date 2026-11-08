@@ -83,7 +83,7 @@ export type LifecycleEvent =
 export interface SessionDeps {
   createSdk: (options: SmartSpectraOptions) => SdkPort;
   decode: (buf: Buffer) => DecodedMetricsLike;
-  apiKey: Secret;
+  apiKey: Pick<Secret, 'present' | 'reveal' | 'redact'>;
   emit: (e: AegisEvent) => void;
   nowMs: () => number;
   rssBytes: () => number;
@@ -93,6 +93,8 @@ export interface SessionDeps {
   statsIntervalMs?: number;
   /** Max time to wait for each native stop/destroy before moving on (native stop can block). */
   teardownTimeoutMs?: number;
+  /** Fail a session stuck in STARTING (no SDK 'running' status) after this long. Default 30 s. */
+  startupTimeoutMs?: number;
 }
 
 const VALIDATION_NAMES: Record<number, string> = Object.fromEntries(
@@ -113,7 +115,7 @@ const ERROR_MAP: Record<number, { kind: ErrorKind; text: string }> = {
   [SmartSpectraErrorCode.kConfigurationFailed]: { kind: 'processing', text: 'SDK configuration failed.' },
 };
 
-const RETRYABLE: ReadonlySet<ErrorKind> = new Set<ErrorKind>(['network', 'server', 'timing', 'processing']);
+const RETRYABLE: ReadonlySet<ErrorKind> = new Set<ErrorKind>(['network', 'server', 'timing', 'processing', 'timeout']);
 
 export class SdkSession {
   private phase: Phase = 'idle';
@@ -127,6 +129,7 @@ export class SdkSession {
   private breathWavePoints = 0;
   private anchor = new TimestampAnchor();
   private statsTimer: ReturnType<typeof setInterval> | null = null;
+  private startupTimer: ReturnType<typeof setTimeout> | null = null;
   private startedAt = 0;
   private sessionId = '-';
   private statsTicks = 0;
@@ -201,6 +204,11 @@ export class SdkSession {
       return this.fail(err);
     }
     this.statsTimer = setInterval(() => this.tick(), this.deps.statsIntervalMs ?? 1000);
+    this.startupTimer = setTimeout(() => {
+      if (this.phase === 'starting') {
+        void this.failRunning(this.err('timeout', 'SmartSpectra did not start measuring within 30 seconds. With SDK 3.4.0 this is how a rejected (invalid or expired) API key usually appears, and it can also mean the service is unreachable. Check your network, or replace the API key, then try again.', true));
+      }
+    }, this.deps.startupTimeoutMs ?? 30_000);
     return { ok: true };
   }
 
@@ -263,7 +271,11 @@ export class SdkSession {
 
   private wire(sdk: SdkPort): void {
     sdk.on('processingStatus', (status) => {
-      if (status === ProcessingStatus.kRunning && this.phase === 'starting') this.setPhase('running', null);
+      if (status === ProcessingStatus.kRunning && this.phase === 'starting') {
+        if (this.startupTimer) clearTimeout(this.startupTimer);
+        this.startupTimer = null;
+        this.setPhase('running', null);
+      }
     });
     sdk.on('validationStatus', (code, _ts, hint) => {
       this.deps.emit({ type: 'validation', code, name: VALIDATION_NAMES[code] ?? `Code${code}`, hint: String(hint ?? '') });
@@ -368,6 +380,8 @@ export class SdkSession {
   private retire(): Promise<void> {
     if (this.statsTimer) clearInterval(this.statsTimer);
     this.statsTimer = null;
+    if (this.startupTimer) clearTimeout(this.startupTimer);
+    this.startupTimer = null;
     const sdk = this.sdk;
     this.sdk = null;
     if (!sdk) return this.teardown;

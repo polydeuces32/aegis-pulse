@@ -30,3 +30,4 @@ spike/
 release/
 dist-electron/
 .cache/
+credentials.bin

@@ -1,7 +1,9 @@
 import { useEffect, useState } from 'react';
+import { CredentialPanel } from './components/CredentialPanel';
 import { ReadingInstrument } from './components/Instruments';
 import { Waveform } from './components/Waveform';
 import { formatClock, hintFor, readingStatus } from './state/quality';
+import { computeReadiness } from './state/readiness';
 import { useObservatory } from './state/useObservatory';
 
 const PULSE_COLOR = '#ff6b8b';
@@ -18,6 +20,8 @@ export function App(): JSX.Element {
   const pulseStatus = readingStatus(o.pulse, o.phase, o.sinceMs('pulse'));
   const breathStatus = readingStatus(o.breathing, o.phase, o.sinceMs('breathing'));
   const hint = active && o.validation ? hintFor(o.validation.name, o.validation.hint) : null;
+  const needsKey = o.cred?.source === 'none';
+  const readiness = computeReadiness({ phase: o.phase, pulse: o.pulse, breathing: o.breathing, hintLevel: hint?.level ?? null, runningSec: o.sessionSec });
 
   // Screen-reader summary, refreshed at most every 10 s so it is not noisy.
   useEffect(() => {
@@ -51,7 +55,9 @@ export function App(): JSX.Element {
       </header>
 
       <main>
-        {!o.consent ? (
+        <CredentialPanel status={o.cred} busy={o.credBusy} locked={active} message={o.credMessage} notice={o.credNotice} onEnterNative={() => void o.enterKeyNative()} onSaveTyped={(k) => void o.saveTypedKey(k)} onImport={() => void o.importKey()} onRemove={() => void o.removeKey()} />
+
+        {needsKey || !o.cred ? null : !o.consent ? (
           <section className="consent" data-testid="consent" aria-labelledby="consent-h">
             <h2 id="consent-h">Before the camera turns on</h2>
             <ul>
@@ -68,7 +74,7 @@ export function App(): JSX.Element {
           </section>
         ) : (
           <section className="controls" aria-label="Session controls">
-            <button className="primary" onClick={() => void o.start()} disabled={o.busy || active} data-testid="start">
+            <button className="primary" onClick={() => void o.start()} disabled={o.busy || active || needsKey} data-testid="start">
               Start measuring
             </button>
             <button className="danger" onClick={() => void o.stop()} disabled={o.busy || !active} data-testid="stop">
@@ -83,8 +89,24 @@ export function App(): JSX.Element {
           <div className="banner err" role="alert" data-testid="error">
             <strong>{o.error.kind.replace('-', ' ')}</strong>: {o.error.message}
             {o.error.retryable ? ' You can press Start to retry.' : ''}
+            {o.error.kind === 'authentication' || o.error.kind === 'missing-key' || o.error.kind === 'timeout' ? ' You can enter a different key in the API key section above.' : ''}
           </div>
         )}
+
+        <section className={`readiness lvl-${readiness.level}`} aria-label="Measurement readiness" data-testid="readiness">
+          <div className="readiness-head">
+            <strong>{readiness.headline}</strong>
+            <span>{readiness.detail}</span>
+          </div>
+          <div className="steps-row">
+            {([['Pulse', readiness.pulse], ['Breathing', readiness.breathing]] as const).map(([name, st]) => (
+              <div key={name} className={`rstep rs-${st.state}`}>
+                <div className="rstep-top"><span>{name}</span><span>{st.label}</span></div>
+                <progress max={1} value={st.windowProgress} aria-label={`${name} averaging window progress`} />
+              </div>
+            ))}
+          </div>
+        </section>
 
         <div className="stage">
           <section className="viewport" aria-label="Camera preview">
@@ -134,6 +156,16 @@ export function App(): JSX.Element {
             <p className="note">SDK upper-chest motion trace in relative units. Best when still, not talking, and the camera is steady.</p>
           </section>
         </div>
+
+        <details className="panel explain" data-testid="explain">
+          <summary>How to read these numbers</summary>
+          <ul>
+            <li><strong>Pulse</strong> is the SDK&apos;s average heart rate over the last 12 seconds. <strong>Breathing</strong> is its average over the last 30 seconds.</li>
+            <li><strong>How much to trust it</strong> is the SDK&apos;s own 0&ndash;100% score. We group it as Low (&lt;40%), Medium (40&ndash;69%) and High (70%+) for readability; those groups are this app&apos;s wording, not an SDK rating.</li>
+            <li><strong>Steady</strong> means the SDK considers the reading settled. <strong>Still settling</strong> means treat it as preliminary.</li>
+            <li>Movement, talking, chewing, flickering light or a handheld camera can produce wrong readings that still look confident.</li>
+          </ul>
+        </details>
 
         <details className="panel pipeline" data-testid="stats">
           <summary>Pipeline diagnostics</summary>

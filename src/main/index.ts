@@ -1,10 +1,12 @@
 import { join, resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
-import { BrowserWindow, app, session as electronSession } from 'electron';
+import { BrowserWindow, app, clipboard, safeStorage, session as electronSession } from 'electron';
 import { decodeMetrics, SmartSpectraSDK } from '@smartspectra/node-sdk';
 import { CH, isTrustedUrl, type AegisEvent } from '../shared/ipc';
+import { CredentialService, CredentialStore } from './credentials';
 import { registerIpc } from './ipc';
-import { loadApiKey } from './keystore';
+import { KeyHolder } from './keystore';
+import { promptForApiKey } from './nativePrompt';
 import { SdkSession, type SdkPort } from './sdkSession';
 import { SessionLogger } from './sessionLog';
 import type { DecodedMetricsLike } from './metrics';
@@ -14,7 +16,9 @@ const devUrl = process.env['ELECTRON_RENDERER_URL'];
 const indexFile = join(__dirname, '..', 'renderer', 'index.html');
 const allowedUrls: string[] = devUrl ? [devUrl] : [pathToFileURL(indexFile).href];
 
-const apiKey = loadApiKey({ env: process.env, projectRoot, packaged: app.isPackaged });
+// The key lives only in this holder (main process). It is filled by CredentialService after app ready.
+const apiKey = new KeyHolder();
+let credentials: CredentialService | null = null;
 
 let win: BrowserWindow | null = null;
 let disposeIpc: (() => void) | null = null;
@@ -64,7 +68,8 @@ function createWindow(): void {
   win.webContents.setWindowOpenHandler(() => ({ action: 'deny' }));
   win.webContents.on('will-navigate', (e) => e.preventDefault());
   win.webContents.on('will-attach-webview', (e) => e.preventDefault());
-  disposeIpc = registerIpc(win, session, allowedUrls);
+  if (!credentials) throw new Error('credentials not initialised');
+  disposeIpc = registerIpc(win, session, credentials, allowedUrls);
   win.on('closed', () => {
     disposeIpc?.();
     disposeIpc = null;
@@ -92,7 +97,21 @@ function installPermissionPolicy(): void {
 
 app.whenReady().then(() => {
   sessionLog.lifecycle({ ts: Date.now(), sessionId: '-', event: 'app', what: 'ready' });
-  if (!apiKey.present) console.warn('[aegis] SMARTSPECTRA_API_KEY not configured; Start will report missing-key.');
+  credentials = new CredentialService({
+    store: new CredentialStore(join(app.getPath('userData'), 'credentials.bin'), safeStorage),
+    holder: apiKey,
+    env: process.env,
+    projectRoot,
+    packaged: app.isPackaged,
+    clipboard,
+    prompt: () => promptForApiKey(),
+    canChange: () => {
+      const p = session.snapshot().phase;
+      return p === 'idle' || p === 'error';
+    },
+  });
+  credentials.resolve();
+  console.log(`[aegis] api key source: ${credentials.status().source}`); // source name only, never the key
   installPermissionPolicy();
   createWindow();
   app.on('activate', () => {

@@ -16,5 +16,5 @@
     "jsx": "react-jsx",
     "types": []
   },
-  "include": ["src/renderer", "src/shared", "src/preload/api.d.ts"]
+  "include": ["src/renderer", "src/shared", "src/preload/api.d.ts", "tests/camera.test.ts", "tests/renderer-state.test.ts", "tests/readiness.test.ts"]
 }
