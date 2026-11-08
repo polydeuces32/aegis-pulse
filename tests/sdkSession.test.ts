@@ -29,9 +29,10 @@ function harness(opts: Parameters<typeof fakeSdk>[0] = {}, key = KEY) {
   const events: AegisEvent[] = [];
   const f = fakeSdk(opts);
   let created: unknown = null;
+  let creates = 0;
   let now = 1_000_000;
   const session = new SdkSession({
-    createSdk: (o) => { created = o; return f.sdk; },
+    createSdk: (o) => { created = o; creates++; return f.sdk; },
     decode: (b) => JSON.parse(b.toString()),
     apiKey: new Secret(key),
     emit: (e) => events.push(e),
@@ -40,7 +41,7 @@ function harness(opts: Parameters<typeof fakeSdk>[0] = {}, key = KEY) {
     statsIntervalMs: 10_000,
     teardownTimeoutMs: 20,
   });
-  return { session, events, f, created: () => created as Record<string, unknown>, tick: (ms: number) => { now += ms; } , now: () => now };
+  return { session, events, f, creates: () => creates, created: () => created as Record<string, unknown>, tick: (ms: number) => { now += ms; } , now: () => now };
 }
 
 const frame = (nowMs: number, ts = 1_000, sentAgo = 5): FramePayload => ({
@@ -48,6 +49,17 @@ const frame = (nowMs: number, ts = 1_000, sentAgo = 5): FramePayload => ({
 });
 
 describe('SdkSession', () => {
+  it('a second start while a session is active creates no second SDK instance', async () => {
+    const h = harness();
+    h.session.setConsent(true);
+    const first = await h.session.start();
+    expect(first.ok).toBe(true);
+    const second = await h.session.start();
+    expect(second.ok).toBe(false);
+    expect(h.creates()).toBe(1);
+    expect(h.f.calls.filter((c) => c === 'start')).toHaveLength(1);
+  });
+
   it('refuses to start without consent', async () => {
     const h = harness();
     const r = await h.session.start();

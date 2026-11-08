@@ -8,10 +8,13 @@ interface Props {
   active: boolean;
   label: string;
   emptyText: string;
+  /** Fixed y range (e.g. 0-100 for confidence). Default: auto-scale to the visible window. */
+  fixedRange?: readonly [number, number];
+  tall?: boolean;
 }
 
 /** Plots REAL SDK trace samples only. Auto-scales y to the visible window; draws nothing when there is no data. */
-export function Waveform({ series, color, spanSec, active, label, emptyText }: Props): JSX.Element {
+export function Waveform({ series, color, spanSec, active, label, emptyText, fixedRange, tall }: Props): JSX.Element {
   const ref = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
@@ -45,11 +48,13 @@ export function Waveform({ series, color, spanSec, active, label, emptyText }: P
         ctx.textAlign = 'center';
         ctx.fillText(active ? 'Waiting for SDK samples\u2026' : emptyText, w / 2, h / 2);
       } else {
-        let min = Infinity;
-        let max = -Infinity;
-        for (const p of pts) {
-          if (p.v < min) min = p.v;
-          if (p.v > max) max = p.v;
+        let min = fixedRange ? fixedRange[0] : Infinity;
+        let max = fixedRange ? fixedRange[1] : -Infinity;
+        if (!fixedRange) {
+          for (const p of pts) {
+            if (p.v < min) min = p.v;
+            if (p.v > max) max = p.v;
+          }
         }
         const range = max - min || 1;
         const newest = (pts[pts.length - 1] as { t: number }).t;
@@ -74,7 +79,7 @@ export function Waveform({ series, color, spanSec, active, label, emptyText }: P
     };
     raf = requestAnimationFrame(draw);
     return () => cancelAnimationFrame(raf);
-  }, [series, color, spanSec, active, emptyText]);
+  }, [series, color, spanSec, active, emptyText, fixedRange]);
 
-  return <canvas ref={ref} className="wave" role="img" aria-label={label} />;
+  return <canvas ref={ref} className={tall ? 'wave wave-tall' : 'wave'} role="img" aria-label={label} />;
 }

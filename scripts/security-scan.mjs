@@ -54,6 +54,8 @@ check(/sandbox:\s*true/.test(main), 'sandbox: true');
 check(/webviewTag:\s*false/.test(main), 'webviewTag: false');
 check(/setWindowOpenHandler/.test(main) && /will-navigate/.test(main), 'navigation + popups blocked');
 check(/setPermissionRequestHandler/.test(main) && /hasConsent\(\)/.test(main), 'camera permission gated on consent');
+const perms = read('src/main/permissions.ts');
+check(/s\.consent && cameraWindowOpen\(s\.phase\)/.test(perms) && /allowCamera\(/.test(main), 'camera permission also requires an active, explicitly started session (main process)');
 const session = read('src/main/sdkSession.ts');
 check(/enableTelemetry:\s*false/.test(session), 'SDK telemetry explicitly false');
 check(/useCustomInput/.test(session), 'custom input pipeline');

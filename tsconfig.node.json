@@ -16,5 +16,5 @@
     "types": ["node"]
   },
   "include": ["src/main", "src/preload", "src/shared", "tests", "electron.vite.config.ts", "vitest.config.ts"],
-  "exclude": ["tests/camera.test.ts", "tests/renderer-state.test.ts", "tests/readiness.test.ts"]
+  "exclude": ["tests/ui", "tests/camera.test.ts", "tests/renderer-state.test.ts", "tests/readiness.test.ts"]
 }

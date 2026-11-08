@@ -53,9 +53,10 @@ interface ReadingProps {
   history: Series;
   historyLabel: string;
   note: string;
+  compact?: boolean;
 }
 
-export function ReadingInstrument({ title, unit, color, sig, status, history, historyLabel, note }: ReadingProps): JSX.Element {
+export function ReadingInstrument({ title, unit, color, sig, status, history, historyLabel, note, compact }: ReadingProps): JSX.Element {
   const dim = status.kind === 'preliminary' || status.kind === 'lost' || status.kind === 'idle' || status.kind === 'ended';
   return (
     <section className={`instrument kind-${status.kind}`} aria-label={`${title} reading`}>
@@ -79,7 +80,7 @@ export function ReadingInstrument({ title, unit, color, sig, status, history, hi
         </dl>
         <Sparkline series={history} color={color} spanSec={120} />
         <div className="note">{historyLabel}</div>
-        <div className="note">{note}</div>
+        {!compact && <div className="note">{note}</div>}
       </div>
     </section>
   );

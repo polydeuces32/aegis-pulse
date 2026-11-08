@@ -1,0 +1,34 @@
+# Local, unsigned arm64 test build:  npm run pack
+# Distribution (signed + notarized) needs a Developer ID identity; see docs/INSTALLATION.md.
+appId: dev.aegispulse.app
+productName: Aegis Pulse
+executableName: Aegis Pulse
+directories:
+  output: release
+  buildResources: build
+# asar is off on purpose: the SmartSpectra SDK dlopen()s native libraries by file path, which cannot point inside an asar archive.
+asar: false
+# Whitelist: nothing outside this list (.env, logs/, spike/, scripts/, tests/) can enter the package.
+files:
+  - package.json
+  - out/**
+  - node_modules/**
+  # arm64 macOS only: drop other platforms' native payloads
+  - "!node_modules/@smartspectra/node-sdk-linux-*/**"
+  - "!node_modules/@smartspectra/node-sdk-win32-*/**"
+  - "!node_modules/koffi/build/koffi/!(darwin_arm64)/**"
+  - "!node_modules/koffi/src/**"
+  - "!node_modules/koffi/doc/**"
+  - "!**/.env*"
+  - "!**/*.log"
+mac:
+  target:
+    - target: dir
+      arch: arm64
+  category: public.app-category.healthcare-fitness
+  hardenedRuntime: true
+  gatekeeperAssess: false
+  entitlements: build/entitlements.mac.plist
+  entitlementsInherit: build/entitlements.mac.plist
+  extendInfo:
+    NSCameraUsageDescription: Aegis Pulse uses the camera to measure pulse and breathing on this Mac. Video is processed in memory and never saved or uploaded.

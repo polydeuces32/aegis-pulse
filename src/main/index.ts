@@ -2,11 +2,12 @@ import { join, resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { BrowserWindow, app, clipboard, safeStorage, session as electronSession } from 'electron';
 import { decodeMetrics, SmartSpectraSDK } from '@smartspectra/node-sdk';
-import { CH, isTrustedUrl, type AegisEvent } from '../shared/ipc';
+import { CH, type AegisEvent } from '../shared/ipc';
 import { CredentialService, CredentialStore } from './credentials';
 import { registerIpc } from './ipc';
 import { KeyHolder } from './keystore';
 import { promptForApiKey } from './nativePrompt';
+import { allowCamera, allowCameraCheck, type MediaPolicyState } from './permissions';
 import { SdkSession, type SdkPort } from './sdkSession';
 import { SessionLogger } from './sessionLog';
 import type { DecodedMetricsLike } from './metrics';
@@ -51,6 +52,8 @@ function createWindow(): void {
   win = new BrowserWindow({
     width: 1080,
     height: 780,
+    minWidth: 480,
+    minHeight: 520,
     backgroundColor: '#0b0f14',
     show: false,
     webPreferences: {
@@ -82,16 +85,16 @@ function createWindow(): void {
 
 function installPermissionPolicy(): void {
   const ses = electronSession.defaultSession;
-  // Camera only (never microphone), only for our own page, only after explicit in-app consent.
+  const state = (): MediaPolicyState => ({ consent: session.hasConsent(), phase: session.snapshot().phase, allowedUrls });
+  // Camera only (never microphone), only for our own page, and only with consent AND an active, explicitly started session.
   ses.setPermissionRequestHandler((_wc, permission, callback, details) => {
     const mediaTypes = (details as { mediaTypes?: string[] }).mediaTypes ?? [];
-    const cameraOnly = mediaTypes.length === 1 && mediaTypes[0] === 'video';
     const url = (details as { requestingUrl?: string }).requestingUrl ?? '';
-    callback(permission === 'media' && cameraOnly && isTrustedUrl(url, allowedUrls) && session.hasConsent());
+    callback(allowCamera({ permission, mediaTypes, url }, state()));
   });
   ses.setPermissionCheckHandler((_wc, permission, requestingOrigin, details) => {
     const url = (details as { requestingUrl?: string }).requestingUrl ?? requestingOrigin;
-    return permission === 'media' && isTrustedUrl(url, allowedUrls) && session.hasConsent();
+    return allowCameraCheck(permission, url, state());
   });
 }
 

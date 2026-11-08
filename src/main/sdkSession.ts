@@ -61,6 +61,8 @@ export interface SessionSummary {
 
 /** Lifecycle log events: timestamps, state transitions, rates, latencies and counts only. */
 export type LifecycleEvent =
+  | { ts: number; sessionId: string; event: 'consent'; granted: boolean }
+  | { ts: number; sessionId: string; event: 'start-refused'; reason: 'consent' | 'state' | 'missing-key' }
   | { ts: number; sessionId: string; event: 'phase'; phase: Phase; errorKind: ErrorKind | null }
   | {
       ts: number;
@@ -163,6 +165,7 @@ export class SdkSession {
       return { ok: false, error: this.err('state', 'Stop the measurement before revoking consent.', false) };
     }
     this.consent = granted;
+    this.emitLifecycle({ event: 'consent', granted }); // audit trail: who/when consent changed, in the main process
     return { ok: true };
   }
 
@@ -171,8 +174,12 @@ export class SdkSession {
   }
 
   async start(): Promise<Result> {
-    if (!this.consent) return { ok: false, error: this.err('consent', 'Camera consent has not been granted.', false) };
+    if (!this.consent) {
+      this.emitLifecycle({ event: 'start-refused', reason: 'consent' });
+      return { ok: false, error: this.err('consent', 'Camera consent has not been granted.', false) };
+    }
     if (this.phase !== 'idle' && this.phase !== 'error') {
+      this.emitLifecycle({ event: 'start-refused', reason: 'state' });
       return { ok: false, error: this.err('state', `Cannot start while ${this.phase}.`, false) };
     }
     if (!this.deps.apiKey.present) {

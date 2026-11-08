@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import type { AegisError, AegisEvent, CredentialStatus, MainStats, Phase, Signal } from '../../shared/ipc';
 import { CameraError, FramePump, openCamera, type CaptureStats } from '../capture';
 import { Series } from './series';
+import { SessionTally, type SessionRecord } from './sessionStats';
 
 export interface ValidationState {
   code: number;
@@ -40,6 +41,8 @@ export function useObservatory() {
       breathWave: new Series(4000, WAVE_SPAN_US),
       pulseHist: new Series(1000, HIST_SPAN_US),
       breathHist: new Series(1000, HIST_SPAN_US),
+      pulseConf: new Series(1000, HIST_SPAN_US),
+      breathConf: new Series(1000, HIST_SPAN_US),
     }),
     [],
   );
@@ -48,12 +51,18 @@ export function useObservatory() {
   const packetsRef = useRef(0);
   const runningSince = useRef<number | null>(null);
   const phaseRef = useRef<Phase>('idle');
+  const tally = useRef(new SessionTally());
+  const recordId = useRef(0);
+  const [history, setHistory] = useState<SessionRecord[]>([]); // this app run only; never written to disk
 
   const clearData = useCallback(() => {
     series.pulseWave.clear();
     series.breathWave.clear();
     series.pulseHist.clear();
     series.breathHist.clear();
+    series.pulseConf.clear();
+    series.breathConf.clear();
+    tally.current.reset();
     lastTs.current = { pulse: -1, breathing: -1 };
     receivedAt.current = { pulse: null, breathing: null };
     packetsRef.current = 0;
@@ -91,6 +100,10 @@ export function useObservatory() {
           if (e.phase === 'running') runningSince.current = performance.now();
           if (e.phase === 'stopping' || e.phase === 'idle' || e.phase === 'error') setValidation(null); // quality hints are only valid while measuring
           if (e.phase === 'idle' || e.phase === 'error') {
+            if (runningSince.current !== null) {
+              const rec = tally.current.record(++recordId.current, (performance.now() - runningSince.current) / 1000, packetsRef.current);
+              setHistory((h) => [...h, rec].slice(-20));
+            }
             runningSince.current = null;
             void releaseCamera(); // camera is always released on stop and on error
           }
@@ -102,12 +115,16 @@ export function useObservatory() {
             lastTs.current.pulse = e.pulse.timestampUs;
             receivedAt.current.pulse = now;
             series.pulseHist.push([{ t: e.pulse.timestampUs, v: e.pulse.value }]);
+            series.pulseConf.push([{ t: e.pulse.timestampUs, v: e.pulse.confidence }]);
+            tally.current.add('pulse', e.pulse);
             setPulse(e.pulse);
           }
           if (e.breathing && e.breathing.timestampUs !== lastTs.current.breathing) {
             lastTs.current.breathing = e.breathing.timestampUs;
             receivedAt.current.breathing = now;
             series.breathHist.push([{ t: e.breathing.timestampUs, v: e.breathing.value }]);
+            series.breathConf.push([{ t: e.breathing.timestampUs, v: e.breathing.confidence }]);
+            tally.current.add('breathing', e.breathing);
             setBreathing(e.breathing);
           }
           break;
@@ -176,24 +193,27 @@ export function useObservatory() {
     setError(null);
     clearData();
     try {
-      const stream = await openCamera(); // camera first: a denied camera never touches the SDK
-      streamRef.current = stream;
-      if (videoRef.current) {
-        videoRef.current.srcObject = stream;
-        void videoRef.current.play().catch(() => undefined);
-      }
+      // Main authorizes the camera only for a started session, so Start comes first; a camera failure then ends it.
       const r = await window.aegis.start(); // key stays in main
       if (!r.ok) {
         setError(r.error);
-        await releaseCamera();
         return;
       }
-      const pump = new FramePump(window.aegis, setCapStats);
-      pumpRef.current = pump;
-      pump.start(stream);
-    } catch (e) {
-      setCameraError(e instanceof CameraError ? e.message : 'Camera failed to start.');
-      await releaseCamera();
+      try {
+        const stream = await openCamera();
+        streamRef.current = stream;
+        if (videoRef.current) {
+          videoRef.current.srcObject = stream;
+          void videoRef.current.play().catch(() => undefined);
+        }
+        const pump = new FramePump(window.aegis, setCapStats);
+        pumpRef.current = pump;
+        pump.start(stream);
+      } catch (e) {
+        setCameraError(e instanceof CameraError ? e.message : 'Camera failed to start.');
+        await releaseCamera();
+        await window.aegis.stop(); // a denied camera never leaves an SDK session running
+      }
     } finally {
       setBusy(false);
     }
@@ -212,9 +232,14 @@ export function useObservatory() {
   };
   const sessionSec = runningSince.current === null ? 0 : (nowMs - runningSince.current) / 1000;
 
+  const clearHistory = useCallback(() => setHistory([]), []);
+
   return {
+    tally: tally.current, history, clearHistory,
     phase, consent, pulse, breathing, packets, validation, error, cameraError, mainStats, capStats, busy,
     series, videoRef, sinceMs, sessionSec, grantConsent, revokeConsent, start, stop,
     cred, credMessage, credNotice, credBusy, importKey, enterKeyNative, saveTypedKey, removeKey,
   };
 }
+
+export type Observatory = ReturnType<typeof useObservatory>;
